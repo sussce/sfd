@@ -1,0 +1,18 @@
+//event
+
+keydown       keys and commands manually
+beforeinput   insert chars
+input         update state, spellcheck and autocorrect
+select        accept DOM selection
+keyup         
+mouseup
+
+//key
+case RETURN:
+  return 'split-block'
+command = handlecommand(e)
+
+beforeinput ->
+  ?insertText ->
+    push undo text,charmeta,entity
+      set ->
