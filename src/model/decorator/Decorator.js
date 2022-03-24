@@ -1,7 +1,7 @@
 // @flow
 
-const assert = require('assert')
-const rangin = require('rangin')
+const asserts = require('asserts')
+const findRange = require('findRange')
 const ContentState = require('ContentState')
 const ContentBlock = require('ContentBlock')
 const {List, Repeat} = require('immutable')
@@ -26,22 +26,34 @@ class Decorator {
       const {strategy} = options
       let counts = 0
 
-      // [,,,,'0.0','0.0','0.1','0.1']
+      // [,,'0.0','0.0','0.1','0.1']
       function checker(start, end) {
         if(canFill(list, start, end)) {
           fill(list, start, end, index + DELIMITER + counts++)
         }
       }
-      
-      streategy(block, checker, content)
+
+      strategy(block, checker, content)
     })
 
     return List(list)
   }
 
-  getComponentForKey(key: string) {}
+  getComponentForKey(key: string) {
+    asserts(!!key, "Decorator key error: %s", key)
+    
+    const index = parseInt(key.split(DELIMITER)[0]),
+          component = this.decorators[index].component
 
-  getPropsForKey(key: string) {}
+    return typeof component == "function" ? component : null
+  }
+
+  getPropsForKey(key: string) {
+    const index = parseInt(key.split(DELIMITER)[0])
+          props = this.decorators[index].props
+
+    return props
+  }
 
   get decorators(): $ReadOnlyArray<DecoratorOptions> {
     return this._decorators

@@ -3,16 +3,22 @@
 
 import type {ContentBlockConfig} from 'ContentBlock'
 const ContentBlock = require('ContentBlock')
+const SelectionState = require('SelectionState')
 const CharMeta = require('CharMeta')
 const keyUtil = require('keyUtil')
 const {Record, OrderedMap, List, Repeat} = require('immutable')
-  
+
 type ContentStateConfig = {
-  blockMap: ?OrderedMap<string, ContentBlock>
+  blockMap: ?OrderedMap<string, ContentBlock>,
+  selectionBefore: ?SelectionState,
+  selectionAfter: ?SelectionState
+  // entityMap
 }
 
 const defaultConfig: ContentStateConfig = {
-  blockMap: null
+  blockMap: null,
+  selectionBefore: null,
+  selectionAfter: null
 }
 
 const ContentStateRecord = (Record(defaultConfig):any)
@@ -34,18 +40,19 @@ class ContentState extends ContentStateRecord {
   }
 
   static createWithArray(blocks: Array<ContentBlockConfig>): ContentState {
-    // ?to-OrderedMap
     const blockMap = OrderedMap(
       blocks.map(block=>[block.key, new ContentBlock(block)])
     )
+
+    const selection = blockMap.isEmpty()
+          ? new SelectionState()
+          : SelectionState.createEmpty(blockMap.first().getKey())
     
     return new ContentState({
-      blockMap: blockMap
+      blockMap: blockMap,
+      selectionBefore: selection,
+      selectionAfter: selection
     })
-  }
-
-  findEntity() {
-
   }
   
   getBlockMap(): OrderedMap<string, ContentBlock> {
@@ -55,6 +62,16 @@ class ContentState extends ContentStateRecord {
   getBlockForKey(key: string): ContentBlock {
     return this.getBlockMap().get(key)
   }
+
+  getSelectionBefore(): SelectionState {
+    return this.get('selectionBefore')
+  }
+
+  getSelectionAfter(): SelectionState {
+    return this.get('selectionAfter')
+  }
+  
+  findEntity() {}
 }
 
 module.exports = ContentState

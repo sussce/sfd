@@ -20,6 +20,7 @@ const keyUtil = {
 
   decodin: function(key) {
     const [key1, key2, key3] = key.split(DELIMITER)
+
     return  key1 == key ? null : {
       blockKey: key1,
       decoratorKey: key2,

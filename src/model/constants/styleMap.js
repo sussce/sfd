@@ -6,7 +6,8 @@ const styleMap = {
   CODE: { fontFamily: 'monospace', wordWrap: 'break-word'},
   UNDERLINE: {textDecoration: 'underline'},
   LINETHROUGH: {textDecoration: 'line-through'},
-  get BOLD_ITALIC() { return {...this.BOLD, ...this.ITALIC} }
 }
+
+styleMap.BOLD_ITALIC = { ...styleMap.BOLD, ...styleMap.ITALIC }
 
 module.exports = styleMap

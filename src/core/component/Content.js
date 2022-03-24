@@ -6,6 +6,7 @@ const Block = require('Block')
 const Tree = require('Tree')
 const ContentState = require('ContentState')
 const EditorState = require('EditorState')
+const Editor = require('Editor')
 const React = require('react')
 
 type Props = {

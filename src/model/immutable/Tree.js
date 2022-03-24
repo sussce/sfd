@@ -1,7 +1,7 @@
 // @flow
 'use strict';
 
-const rangin = require('rangin')
+const findRange = require('findRange')
 const ContentState = require('ContentState')
 const ContentBlock = require('ContentBlock')
 const CharMeta = require('CharMeta')
@@ -37,33 +37,33 @@ const defaultBlock: BlockRangeConfig = {
 
 const BlockRange = (Record(defaultBlock):any)
 
-function ranginBlock(decorations: List<string>, block: ContentBlock): List<BlockRange> {
+function findBlock(decorations: List<string>, block: ContentBlock): List<BlockRange> {
   const charMetas = block.get('charMetas')
   let ranges = []
-  
-  rangin(decorations, equal, filter, (start, end) => {
+
+  findRange(decorations, equal, filter, (start, end) => {
     ranges.push(new BlockRange({
       start,
       end,
-      decoratorKey: decorations.get('start'),
-      leaves: ranginLeaf(charMetas.slice(start, end), start)
+      decoratorKey: decorations.get(start),
+      leaves: findLeaf(charMetas.slice(start, end), start)
     }))
   })
   
   return List(ranges)
 }
 
-function ranginLeaf(charMetas: List<CharMeta>, offset: number): List<LeafRange> {
+function findLeaf(charMetas: List<CharMeta>, offset: number): List<LeafRange> {
   const inlineStyles = charMetas.map(charMeta => charMeta.getStyle()).toList()
   let ranges = []
   
-  rangin(inlineStyles, equal, filter, (start, end) => {
+  findRange(inlineStyles, equal, filter, (start, end) => {
     ranges.push(new LeafRange({
       start: offset+start,
       end: offset+end
     }))
-  })
-
+  }
+)
   return List(ranges)
 }
 
@@ -71,14 +71,14 @@ const equal = (a:any, b:any):boolean => a==b,
       filter = (a:any):boolean => !0;
 
 const Tree = {
-  createTree: (
+  new: (
     block: ContentBlock,
-    /*content: ContentState,*/    
+    content: ContentState,
     decorator: ?Decorator
   ): List<BlockRange> => {
     const text = block.getText()
-
-    if(!text.length) {
+ 
+   if(!text.length) {
       return List.of(new BlockRange({
         start: 0,
         end: 0,
@@ -87,11 +87,10 @@ const Tree = {
       }))
     }
 
-    const decorations = decorator ? decorator.getDecorations(block, /*content*/)
+    const decorations = decorator ? decorator.getDecorations(block, content)
           : List(Repeat(null, text.length))
 
-    return ranginBlock(decorations, block)
-    
+    return findBlock(decorations, block)   
   }
 }
 

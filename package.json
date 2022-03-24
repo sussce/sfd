@@ -2,51 +2,60 @@
 	"name": "sfd",
 	"version": "1.0.0",
 	"license": "MIT",
+	"jest": {
+		"verbose": true
+	},
 	"main": "lib/sfd.js",
 	"files": [
 		"lib/",
 		"LICENSE"
 	],
 	"scripts": {
-		"prepublish": "yarn build",
+		"flow": "flow",
+		"prepublish": "npm run build",
 		"build": "webpack -c webpackfile.lib",
-		"dev": "yarn build --env debug && yarn server",
-		"server": "webpack s -c webpackfile.server --progress"
+		"dev": "npm run build -- --env debug && npm run server",
+		"server": "webpack server -c webpackfile.server --progress --hot",
+		"test": "jest"
 	},
-	"dependencies": {},
 	"peerDependencies": {
-		"immutable": ">=4.0.0",
-		"react": ">=16.0.0",
-		"react-dom": ">=16.0.0"
+		"immutable": "^4.0.0",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.13.16",
-		"@babel/core": "^7.14.0",
-		"@babel/eslint-parser": "^7.13.14",
-		"@babel/plugin-proposal-class-properties": "^7.13.0",
-		"@babel/plugin-proposal-object-rest-spread": "^7.13.8",
-		"@babel/preset-env": "^7.14.1",
-		"@babel/preset-flow": "^7.13.13",
-		"@babel/preset-react": "^7.13.13",
-		"@types/react": "^17.0.4",
-		"@types/react-dom": "^17.0.3",
-		"babel-loader": "^8.2.2",
-		"clean-webpack-plugin": "^4.0.0-alpha.0",
+		"@babel/cli": "^7.17.6",
+		"@babel/core": "^7.17.5",
+		"@babel/eslint-parser": "^7.17.0",
+		"@babel/plugin-proposal-class-properties": "^7.16.7",
+		"@babel/plugin-proposal-object-rest-spread": "^7.17.3",
+		"@babel/preset-env": "^7.16.11",
+		"@babel/preset-flow": "^7.16.7",
+		"@babel/preset-react": "^7.16.7",
+		"@types/react": "^17.0.39",
+		"@types/react-dom": "^17.0.11",
+		"babel-loader": "^8.2.3",
+		"clean-webpack-plugin": "^4.0.0",
 		"cross-env": "^7.0.3",
-		"css-loader": "^5.2.4",
-		"eslint": "^7.25.0",
+		"css-loader": "^5.2.7",
+		"eslint": "^7.32.0",
 		"eslint-config-babel": "^9.0.0",
-		"eslint-config-prettier": "^8.3.0",
-		"eslint-plugin-flowtype": "^5.7.2",
-		"eslint-plugin-react": "^7.23.2",
-		"flow-bin": "^0.150.0",
-		"html-webpack-plugin": "^5.3.1",
+		"eslint-config-prettier": "^8.4.0",
+		"eslint-plugin-flowtype": "^5.10.0",
+		"eslint-plugin-react": "^7.28.0",
+		"flow-bin": "^0.150.1",
+		"html-webpack-plugin": "^5.5.0",
 		"jest": "^26.6.3",
-		"prettier": "^2.2.1",
+		"prettier": "^2.5.1",
+		"react-test-renderer": "^17.0.2",
 		"style-loader": "^2.0.0",
-		"webpack": "^5.36.2",
-		"webpack-cli": "^4.6.0",
-		"webpack-dev-server": "^3.11.2",
-		"webpack-merge": "^5.7.3"
+		"webpack": "^5.69.1",
+		"webpack-cli": "^4.9.2",
+		"webpack-dev-server": "^3.11.3",
+		"webpack-merge": "^5.8.0"
+	},
+	"dependencies": {
+		"babel-polyfill": "^6.26.0",
+		"draft-js": "^0.11.7"
 	}
 }

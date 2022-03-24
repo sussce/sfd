@@ -47,7 +47,7 @@ class Block extends React.Component<Props> {
       if(leaves.size == 0) {
         return null
       }
-      
+
       const Leaves = leaves.map((leafRange, key2) => {
         const offsetKey = keyUtil.encodin(blockKey, key1, key2),
               start = leafRange.get('start'),
@@ -60,24 +60,29 @@ class Block extends React.Component<Props> {
         }
         
         return <Leaf key={offsetKey} {...leafProps}/>
-      })
+      }).toArray()
       
       if(decoratorKey == null || !decorator) {
         return Leaves
       }
 
+      const decoratorOffsetKey = keyUtil.encodin(blockKey, key1, 0)
       const DecoratorComponent = decorator.getComponentForKey(decoratorKey),
             decoratorProps = decorator.getPropsForKey(decoratorKey),
             decoratorProps1 = {
-              offsetKey: keyUtil.encoding(blockKey, key1, 0),
+              offsetKey: decoratorOffsetKey,
               blockKey,
               start: leaves.first().get('start'),
               end: leaves.first().get('end'),
-              text: text.slice(start, end),
-              //entityKey: content.getEntityAt()
-            }            
+              text: text.slice(start, end)
+              // entityKey: content.getEntityAt()
+            }
 
-      return <DecoratorComponent {...decoratorProps1} {...decoratorProps}/>
+      return (
+        <DecoratorComponent key = {decoratorOffsetKey} {...decoratorProps1} {...decoratorProps}>
+          {Leaves}
+        </DecoratorComponent>
+      )
     }).toArray()
   }
 }
