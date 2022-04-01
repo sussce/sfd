@@ -1,19 +1,20 @@
 // @flow
 'use strict';
 
-const castSelection = require('castSelection')
+import type {RawSelection} from 'RawSelection'
+
 const asserts = require('asserts')
 const findOffsetKey = require('findOffsetKey')
-const DOMModifier = require('DOMModifier')
-const EditorState = require('EditorState')
+const castSelection = require('castSelection')
+const getRawSelection = require('getRawSelection')
 const SelectionState = require('SelectionState')
+const EditorState = require('EditorState')
 
 function getCastSelection(
   editorState: EditorState,
   root: ?HTMLElement
 ): SelectionState {
-  //debugger;
-  const rawSelection: DOMSelection =  DOMModifier.getSelection(root),
+  const rawSelection: RawSelection = getRawSelection(root),
         { anchorNode, anchorOffset, focusNode, focusOffset, rangeCount } = rawSelection,
         selection = editorState.getSelection()
 
@@ -37,7 +38,8 @@ function getCastSelection(
   }
 
   if(anchorIsTextNode) {
-    
+    // castSelectionWithTextNode
+    // castSelectionWithNonTextNode
   } else if(focusIsTextNode) {
 
   } else {

@@ -7,15 +7,17 @@ type SelectionStateConfig = {
   anchorKey: ?string,
   anchorOffset: ?number,
   focusKey: ?string,
-  focusOffset: ?number
+  focusOffset: ?number,
+  focused: boolean
   // backward
 }
 
 const defaultConfig: SelectionStateConfig = {
   anchorKey: null,
-  anchorOffset: null,
+  anchorOffset: 0,
   focusKey: null,
-  focusOffset: null
+  focusOffset: 0,
+  focused: false
 }
 
 const SelectionStateRecord = (Record(defaultConfig):any)
@@ -27,6 +29,7 @@ class SelectionState extends SelectionStateRecord {
       anchorOffset: 0,
       focusKey: key,
       focusOffset: 0,
+      focused: false
     })
   }
 
@@ -46,6 +49,10 @@ class SelectionState extends SelectionStateRecord {
     return this.get('focusOffset')
   }
 
+  focused(): boolean {
+    return this.get('focused')
+  }
+  
   collapsed(): boolean {
     return this.getAnchorKey() == this.getFocusKey() &&
       this.getAnchorOffset() == this.getFocusOffset()

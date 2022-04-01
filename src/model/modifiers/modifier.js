@@ -27,7 +27,7 @@ const modifier = {
       style: inlineStyle || OrderedSet()
       // entityKey
     })
-
+    
     const newBlock = block.merge({
       text: text.slice(0, startOffset)
         + chars
@@ -38,12 +38,11 @@ const modifier = {
         startOffset
       )
     })
-
+    
     const newOffset = startOffset + chars.length
     
     return content.merge({
       blockMap: content.getBlockMap().set(startKey, newBlock),
-      selectionBefore: selection,
       selectionAfter: selection.merge({
         anchorOffset: newOffset,
         focusOffset: newOffset

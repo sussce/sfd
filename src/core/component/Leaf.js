@@ -2,24 +2,50 @@
 'use strict';
 
 import type {InlineStyle} from 'InlineStyle'
+const asserts = require('asserts')
+const isElement = require('isElement')
+const setRawSelection = require('setRawSelection')
 const TextNode = require('TextNode')
 const styleMap = require('styleMap')
+const Block = require('Block')
+const SelectionState = require('SelectionState')
 const React = require('react')
 
 type Props = {
   offsetKey: string,
   text: string,
-  inlineStyle: InlineStyle
+  inlineStyle: InlineStyle,
+  start: number,
+  block: Block,
+  selection: SelectionState
 }
 
 class Leaf extends React.Component<Props> {
+  leaf: ?HTMLElement;
+  
   constructor(props:Props) {
     super(props)
   }
+
+  componentDidMount(): void {
+    this.setSelection()
+  }
+
+  componentDidUpdate(): void {
+    this.setSelection()
+  }
+
+  // shouldComponentUpdate(nextProps: Props): boolean {
+  //   const leafNode = this.leaf
+  //   const should = leafNode.textContent !== nextProps.text &&
+  //         this.props.inlineStyle !== nextProps.inlineStyle
+
+  //   return should
+  // }
   
   render(): React.Node {
     const {offsetKey, text, inlineStyle} = this.props
-    const style = inlineStyle.reduce((styles, style, _)=>{
+    const style = inlineStyle.reduce((styles, style, _) => {
       const slice = styleMap[style]
       return Object.assign(styles, slice)
     }, {})
@@ -28,11 +54,37 @@ class Leaf extends React.Component<Props> {
       <span
         key={offsetKey}
         data-offset-key={offsetKey}
+        ref={node => (this.leaf = node)}
         style={style}>
         <TextNode>{text}</TextNode>
-      </span>
-    )
+       </span>
+     )
+   }
+
+  setSelection(): void {
+    const {selection, start, block, text} = this.props,
+          node = this.leaf          
+    
+    asserts(isElement(node), 'Miss node')
+    const child = node.firstChild
+    asserts(isElement(child), 'Miss child node')
+
+    const isBr = (node: ?Node) => false
+    let targetNode
+    
+    if(child.nodeType == Node.TEXT_NODE) {
+      targetNode = child
+    } else if(isBr(child)) {
+      targetNode = node
+    } else {
+      targetNode = child.firstChild
+    }
+
+    const blockKey = block.getKey(),
+          end = start + text.length
+    
+    setRawSelection(targetNode, selection, blockKey, start, end)
   }
 }
-
+               
 module.exports = Leaf

@@ -6,7 +6,7 @@ const React = require('react')
 const ReactDOM = require('react-dom')
 
 const {Editor, EditorState, Decorator} = sfd
-//const {Editor, EditorState, CompositeDecorator} = require('draft-js')
+// const {Editor, EditorState, CompositeDecorator} = require('draft-js')
 
 class App extends React.Component {
   constructor() {
@@ -15,11 +15,12 @@ class App extends React.Component {
     const options = [{
       strategy: findHandle,
       component: Handle
-    }],
-          decorator = new Decorator(options)
+    }]
+
+    const decorator = new Decorator(options)
     
     this.state = {
-      editorState: EditorState.createWithText('take @hl and\nwrite', decorator),
+      editorState: EditorState.createWithText('take @hm tak\nsome', decorator),
       onChange: (state)=>this.setState({editorState: state})
     }   
   }
@@ -27,9 +28,11 @@ class App extends React.Component {
   render() {
     return (
       <div className='editor-root' style={styles.root}>
-        <Editor
-          editorState={this.state.editorState}
-          onChange={this.state.onChange}/>
+        <div className='editor' style={styles.editor}>
+          <Editor
+            editorState={this.state.editorState}
+            onChange={this.state.onChange}/>
+        </div>
       </div>
     )
   }  
@@ -61,8 +64,25 @@ function findRegex(block, checker, regex) {
 }
 
 const styles = {
-  root: {border: '1px solid black', width: 150, minHeight: 50},
-  handle: {color: "blue", cursor: "pointer"}
+  root: {
+    border: "1px solid #eee",
+    fontFamily: "'Georgia', serif",
+    fontSize: 14,
+    padding: 5,
+    width: 300
+  },
+  editor: {
+    border: "1px solid #ddd",
+    cursor: "text",
+    fontSize: 16,
+    //marginTop: 20,
+    minHeight: 100,
+    //paddingTop: 20
+  },
+  handle: {
+    color: "blue",
+    cursor: "pointer"
+  }
 }
 
 ReactDOM.render(

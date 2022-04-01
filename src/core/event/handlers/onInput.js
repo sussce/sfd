@@ -1,22 +1,18 @@
 // @flow
 'use strict';
 
-const Editor = require('Editor')
+import type {RawSelection} from 'RawSelection'
 const asserts = require('asserts')
 const findOffsetKey = require('findOffsetKey')
-const DOMModifier = require('DOMModifier')
-
-// function onInput(
-//   _this: Editor,
-//   e: SyntheticInputEvent
-// ): void {}
+const getRawSelection = require('getRawSelection')
+const Editor = require('Editor')
 
 function onInput(
   _this: Editor,
   e: ?SyntheticInputEvent<>
 ): void {
   console.log('INPUT')
-  
+
   if(_this._pendingEditorState != undefined) {
     _this.sync(_this._pendingEditorState)
     _this._pendingEditorState = undefined
@@ -25,12 +21,12 @@ function onInput(
   const editorState = _this._latestEditorState,
         content = editorState.getContent()
   
-  const rawSelection = DOMModifier.getSelection(_this.editor),
-        { anchorNode, anchorOffset, isCollapsed } = rawSelection,
+  const rawSelection: RawSelection = getRawSelection(_this.editor),
+        {anchorNode, anchorOffset, isCollapsed} = rawSelection,
         domText = anchorNode.textContent
-
+  
   const anchorKeys = asserts(findOffsetKey(anchorNode, _this.editor), 'Null node'),
-        { start, end } = editorState
+        {start, end} = editorState
         .getTree(anchorKeys.blockKey)
         .getIn([
           anchorKeys.decoratorKey,
@@ -40,8 +36,6 @@ function onInput(
   
   const anchorBlock = content.getBlockForKey(anchorKeys.blockKey),
         modelText = anchorBlock.getText().slice(start, end)    
-
-  console.log(DOMModifier.getSelection(_this.editor))
   
   // _this._latestEditorstate, _this.props.editorState
   if(domText == modelText) {

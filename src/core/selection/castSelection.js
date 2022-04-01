@@ -40,10 +40,10 @@ function castSelection(
         focusLeafStart = focusLeaf.get('start'),
         focusBlockOffset = focusLeafStart + focusOffset
 
-  if(selection.get('anchorKey') == anchorKeys.blockKey &&
-     selection.get('anchorOffset') == anchorBlockOffset &&
-     selection.get('focusKey') == focusKeys.blockKey &&
-     selection.get('focusOffset') == focusBlockOffset) {
+  if(selection.getAnchorKey() == anchorKeys.blockKey &&
+     selection.getAnchorOffset() == anchorBlockOffset &&
+     selection.getFocusKey() == focusKeys.blockKey &&
+     selection.getFocusOffset() == focusBlockOffset) {
     return selection
   }
 

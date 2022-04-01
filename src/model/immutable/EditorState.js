@@ -12,6 +12,7 @@ const {List, OrderedMap, Record} = require('immutable')
 type EditorStateConfig = {
   content: ?ContentState,
   selection: ?SelectionState,
+  //forceSelection: boolean,
   decorator: ?Decorator,
   treeMap: ?OrderedMap<string, List<any>>
   // undo: Stack, selectionBefore beforeinput changeType
@@ -21,6 +22,8 @@ type EditorStateConfig = {
 type EditorStateBaseConfig = {
   content?: ?ContentState,
   selection?: ?SelectionState,
+  //forceSelection?: boolean,
+  // changeType: ?string,
   decorator?: ?Decorator,
   treeMap?: ?OrderedMap<string, List<any>>
 }
@@ -82,15 +85,37 @@ class EditorState {
     options: EditorStateChangeConfig
   ): EditorState {
     const record = editorState.immu.withMutations(map => {
-      const { selection, decorator } = options
+      const {selection} = options
       
-      const content = options.content || editorState.getContent()
+      const content = options.content || map.get('content'),
+            existDecorator = map.get('decorator')
+      let decorator = existDecorator
 
-      // ?new treeMap with decorator
+      if(options.decorator) {
+        decorator = options.decorator
+      } else if(options.decorator === null) {
+        decorator = null
+      }
       
-      if(content != editorState.getContent()) {
+      if(decorator !== existDecorator) {
+        let newTreeMap
+        
+        if(decorator) {
+          // newTreeMap = newTreeMapWithDecorator()
+        } else {
+          // newTreemap = newTreeMap()
+        }
+
+        // return map.merge
+      }
+
+      if(content !== editorState.getContent()) {
         map.merge({
-          treeMap: renewTreeMap(editorState, content, decorator)
+          treeMap: newTreeMapWithBlock(
+            editorState,
+            content,
+            decorator
+          )
         })
       }
       
@@ -100,10 +125,51 @@ class EditorState {
     return new EditorState(record)
   }
 
-  // static push
+  static push(
+    editorState: EditorState,
+    newContent: ContentState,
+    forceSelection: boolean,
+    changeType: string
+  ): EditorState {
+    const content = editorState.getContent()
+    
+    if(newContent == editorState.getContent()) {
+      return editorState
+    }
+
+    const selection = editorState.getSelection()
+
+    if(selection !== content.getSelectionAfter()) {
+      // undoStack = undoStack.push(content)
+      newContent = newContent.set('selectionBefore', selection)
+    } else if(changeType == 'insert-chars') {
+      newContent = newContent.set('selectionBefore', content.getSelectionBefore())
+    }
+    
+    const options = {
+      content: newContent,
+      selection: newContent.getSelectionAfter(),
+      forceSelection: forceSelection,
+      changetype: changeType
+      // undo: undoStack
+    }
+    
+    return EditorState.set(editorState, options)  
+  }
   
   acceptSelection(selection: SelectionState): EditorState {
     return  EditorState.set(this, { selection: selection })
+  }
+
+  forceSelection(selection: SelectionState): EditorState {
+    if(!selection.focused()) {
+      selection = selection.merge({ focused: true })
+    }
+    
+    return EditorState.set(this, {
+      selection: selection,
+      forceSelection: true
+    })
   }
   
   getContent(): ContentState {
@@ -131,7 +197,7 @@ class EditorState {
           content = this.getContent()
     
     // if(selection.isCollapsed())
-    return this.getInlineStyleCollapsed(content, selection)
+    return this.getInlineStyleCollapsed(content, selection) 
   }
 
   getInlineStyleCollapsed(
@@ -143,6 +209,7 @@ class EditorState {
   }
 
   // getInlinestyleNonCollapsed
+  // getUndo
   
   get immu(): EditorStateRecord {
     return this._immu
@@ -159,7 +226,7 @@ function newTreeMap(
     .toOrderedMap()
 }
 
-function renewTreeMap(
+function newTreeMapWithBlock(
   editorState,
   content,
   decorator
@@ -175,5 +242,7 @@ function renewTreeMap(
       .map(block => Tree.new(block, content, decorator))
   )
 }
+
+// function newTreeMapWithDecorator() {}
 
 module.exports = EditorState

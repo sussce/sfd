@@ -67,6 +67,7 @@ class Editor extends React.Component<Props> {
 
     this._blockSelectEvent = false
     this._latestEditorState = props.editorState
+    this.onFocus = this.buildHandler('onFocus')
     this.onKeyDown = this.buildHandler('onKeyDown')
     this.onBeforeInput = this.buildHandler('onBeforeInput')
     this.onInput = this.buildHandler('onInput')
@@ -85,7 +86,7 @@ class Editor extends React.Component<Props> {
   }
 
   render(): React.Node {
-    const { editorState, readOnly } = this.props
+    const {editorState, readOnly} = this.props
 
     const style = {
       outline: 'none',
@@ -103,6 +104,7 @@ class Editor extends React.Component<Props> {
              ref={this.refContainer}>
           <div className='editor'
                style={style}
+               onFocus={this.onFocus}
                onKeyDown={this.onKeyDown}
                onBeforeInput={this.onBeforeInput}
                onInput={this.onInput}

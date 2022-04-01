@@ -1,6 +1,7 @@
 // @flow
 'use strict';
 
+const SelectionState = require('SelectionState')
 const keyUtil = require('keyUtil')
 const Leaf = require('Leaf')
 const Decorator = require('Decorator')
@@ -13,8 +14,9 @@ type Props = {
   offsetKey: ?string,
   blockKey: string,
   block: ContentBlock,
-  tree: List<any>,
-  decorator: Decorator
+  decorator: Decorator,
+  selection: SelectionState,
+  tree: List<any>
 }
 
 class Block extends React.Component<Props> {
@@ -35,7 +37,7 @@ class Block extends React.Component<Props> {
   }
 
   renderChildren(): React.Node[] {
-    const {blockKey, block, tree, decorator} = this.props
+    const { blockKey, block, tree, decorator, selection, editor } = this.props
     const text = block.getText()
 
     return tree.map((blockRange, key1) => {
@@ -56,7 +58,10 @@ class Block extends React.Component<Props> {
         const leafProps = {
           offsetKey,
           text: text.slice(start, end),
-          inlineStyle: block.getStyleAt(start)
+          inlineStyle: block.getStyleAt(start),          
+          start,
+          block,
+          selection
         }
         
         return <Leaf key={offsetKey} {...leafProps}/>

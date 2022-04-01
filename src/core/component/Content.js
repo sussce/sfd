@@ -18,6 +18,10 @@ class Content extends React.Component<Props> {
   constructor(props: Props) {
     super(props)
   }
+
+  componentDidUpdate(): void {
+    // console.log(this.props.editorState.getContent().getBlockMap().toJS())
+  }
   
   render(): React.Node {
     const {editor, editorState} = this.props
@@ -35,7 +39,9 @@ class Content extends React.Component<Props> {
     content: ContentState
   ): React.Node {
     const trees = editorState.getTreeMap(),
-          decorator = editorState.getDecorator()
+          decorator = editorState.getDecorator(),
+          selection = editorState.getSelection()
+
     let Blocks = [];
 
     //blockArray = content.getBlockArray
@@ -46,8 +52,9 @@ class Content extends React.Component<Props> {
               offsetKey,
               blockKey: key,
               block,
-              tree,
-              decorator
+              decorator,              
+              selection,
+              tree
             }
 
       Blocks.push(<Block key={key} {...props}/>)

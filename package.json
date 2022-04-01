@@ -1,6 +1,7 @@
 {
 	"name": "sfd",
 	"version": "1.0.0",
+  "description": "Stolen from Draftjs",
 	"license": "MIT",
 	"jest": {
 		"verbose": true
@@ -11,12 +12,13 @@
 		"LICENSE"
 	],
 	"scripts": {
-		"flow": "flow",
 		"prepublish": "npm run build",
 		"build": "webpack -c webpackfile.lib",
 		"dev": "npm run build -- --env debug && npm run server",
 		"server": "webpack server -c webpackfile.server --progress --hot",
-		"test": "jest"
+		"flow": "flow",
+		"test": "jest",
+    "lint": "eslint"
 	},
 	"peerDependencies": {
 		"immutable": "^4.0.0",
