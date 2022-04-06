@@ -7,8 +7,6 @@ function onFocus(
   _this: Editor,
   e: SyntheticFocusEvent<>
 ): void {
-  console.log('FOCUS')
-
   const editorState = _this._latestEditorState
 
   if(editorState.getSelection().focused()) {

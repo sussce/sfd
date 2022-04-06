@@ -36,22 +36,49 @@ function castSelection(
   }
 
   const anchorLeafStart = anchorLeaf.get('start'),
+        anchorLeafEnd = anchorLeaf.get('end'),
         anchorBlockOffset = anchorLeafStart + anchorOffset,
         focusLeafStart = focusLeaf.get('start'),
+        focusLeafEnd = focusLeaf.get('end'),
         focusBlockOffset = focusLeafStart + focusOffset
 
-  if(selection.getAnchorKey() == anchorKeys.blockKey &&
-     selection.getAnchorOffset() == anchorBlockOffset &&
-     selection.getFocusKey() == focusKeys.blockKey &&
-     selection.getFocusOffset() == focusBlockOffset) {
+  const areEqual = selection.getAnchorKey() === anchorKeys.blockKey &&
+        selection.getAnchorOffset() === anchorBlockOffset &&
+        selection.getFocusKey() === focusKeys.blockKey &&
+        selection.getFocusOffset() === focusBlockOffset
+  
+  if(areEqual) {
     return selection
   }
 
+  const collapsed = anchorKeys.blockKey === focusKeys.blockKey &&
+      anchorBlockOffset === focusBlockOffset
+      
+  let backward = false
+
+  if(anchorKeys.blockKey === focusKeys.blockKey) {
+    backward = anchorLeafStart === focusLeafStart
+      && anchorLeafEnd === focusLeafEnd
+      ? anchorOffset > focusOffset
+      : anchorLeafStart > focusLeafStart
+  } else {
+    const startKey = editorState
+          .getContent()
+          .getBlockMap()
+          .keySeq()
+          .skipUntil(key => key === anchorKeys.blockKey
+                     || key === focusKeys.blockKey)
+          .first()
+    backward = startKey === focusKeys.blockKey
+  }
+  
   return selection.merge({
     anchorKey: anchorKeys.blockKey,
     anchorOffset: anchorBlockOffset,
     focusKey: focusKeys.blockKey,
-    focusOffset: focusBlockOffset
+    focusOffset: focusBlockOffset,
+    collapsed,
+    backward
   })
 }
 

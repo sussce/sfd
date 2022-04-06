@@ -1,7 +1,8 @@
 // @flow
 'use strict';
 
-// const backspace = require('backspace')
+const splitBlock = require('splitBlock')
+const backspace = require('backspace')
 const keyMap = require('keyMap')
 const keys = require('keys')
 const Editor = require('Editor')
@@ -16,8 +17,11 @@ function onKeyDown(
   // space, return
   switch(keyCode) {
   case keys.RETURN:
+    console.log('key:return')
+    e.preventDefault()
+    break
   case keys.SPACE:
-    console.log('space')
+    console.log('key:space')
     e.preventDefault()
     break;
   default:
@@ -25,6 +29,7 @@ function onKeyDown(
   }
   
   const command = keyMap(e)
+
   if(!command) {
     return 
   }
@@ -48,9 +53,11 @@ function handle(
 ): EditorState {
   switch(command) {
   case 'backspace':
-    console.log('backspace')
-    // return backspace(editorstate)
-    return editorState
+    return backspace(editorState)
+  case 'backspaceWord':
+    return backspaceWord(editorState)
+  case 'split-block':
+    return splitBlock(editorState)
   default:
     return editorState
   }

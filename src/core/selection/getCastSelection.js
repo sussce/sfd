@@ -2,7 +2,6 @@
 'use strict';
 
 import type {RawSelection} from 'RawSelection'
-
 const asserts = require('asserts')
 const findOffsetKey = require('findOffsetKey')
 const castSelection = require('castSelection')

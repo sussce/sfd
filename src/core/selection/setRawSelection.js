@@ -11,38 +11,101 @@ function setRawSelection(
   start: number,
   end: number
 ): void {
-  const rawSelection: RawSelection = getRawSelection(node),
-        anchorKey = selection.getAnchorKey(),
-        anchorOffset = selection.getAnchorOffset(),
-        focusKey = selection.getFocusKey(),
-        focusOffset = selection.getFocusOffset()
+  const rawSelection: RawSelection = getRawSelection(node)
+  const anchorKey = selection.getAnchorKey(),
+      anchorOffset = selection.getAnchorOffset(),
+      focusKey = selection.getFocusKey(),
+      focusOffset = selection.getFocusOffset()
 
   const hasAnchor = anchorKey === blockKey &&
         start <= anchorOffset &&
         anchorOffset <= end,
+
         hasFocus = focusKey === blockKey &&
         start <= focusOffset &&
-        focusOffset <= end
+        focusOffset <= end,
+        
+        backward = selection.backward()
   
   if(hasAnchor && hasFocus) {
     rawSelection.removeAllRanges()
+    addAnchor(
+      rawSelection,
+      node,
+      anchorOffset - start
+    )
+    addFocus(
+      rawSelection,
+      node,
+      focusOffset - start
+    )
+    return
+  }
 
-    // setAnchor
-    const range = node.ownerDocument.createRange();
-    range.setStart(node, anchorOffset - start)
-    rawSelection.addRange(range)
+  if(!backward) {
+    if(hasAnchor) {
+      rawSelection.removeAllRanges()
+      addAnchor(
+        rawSelection,
+        node,
+        anchorOffset - start
+      )
+    }
+    
+    if(hasFocus) {
+      addFocus(
+        rawSelection,
+        node,
+        focusOffset - start
+      )
+    }
+  } else {
+    if(hasFocus) {
+      rawSelection.removeAllRanges()
+      addAnchor(
+        rawSelection,
+        node,
+        focusOffset - start
+      )
+    }
 
-    // setFocus
-  } else if(hasAnchor) {
-    
-  } else if(hasFocus) {
-    
+    if(hasAnchor) {
+      const tempNode = rawSelection.focusNode,
+            tempOffset = rawSelection.focusOffset
+
+      rawSelection.removeAllRanges()
+      addAnchor(
+        rawSelection,
+        node,
+        anchorOffset - start
+      )
+      addFocus(
+        rawSelection,
+        tempNode,
+        tempOffset
+      )
+    }
   }
 }
 
+function addAnchor(
+  selection: RawSelection,
+  node: Node,
+  offset: number
+): void {
+  const range = node.ownerDocument.createRange();
+  range.setStart(node, offset)
+  selection.addRange(range)
+}
 
-function addRangeToSelction(): void {}
-function addAnchorToSelection(): void {}
-function addFocusToSelection(): void {}
+function addFocus(
+  selection: RawSelection,
+  node: Node,
+  offset: number
+): void {
+  if(selection.extend) {
+    selection.extend(node, offset)
+  }
+}
 
 module.exports = setRawSelection

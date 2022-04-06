@@ -49,6 +49,30 @@ const modifier = {
       })
       // entityMap
     })
+  },
+
+  insertText(
+    content: ContentState,
+    selection: SelectionState,
+    chars: string,
+  ): ContentState {
+    console.log('modifier:insertTtext')
+    return content
+  },
+
+  removeRange(
+    content: ContentState
+  ): ContentState {
+    console.log('modifier:removeRange')
+    return content
+  },
+
+  splitBlock(
+    content: ContentState,
+    selection: SelectionState
+  ): ContentState {
+    console.log('modifier:splitBlock')
+    return content
   }
 }
 
