@@ -1,3 +1,17 @@
+#modifiers
+  These functions encapsulate some of the most common transaction sequences.
+  `DraftModifier` provides a set of convenience methods that apply
+  modifications to a `ContentState` object based on a target `SelectionState`.
+ 
+  Any change to a `ContentState` should be decomposable into a series of
+  transaction functions that apply the required changes and return output
+  `ContentState` objects.
+
+#richUtils
+  The RichUtils module is a static set of utility functions for rich text editing.
+
+  In each case, these methods accept EditorState objects with relevant parameters and return EditorState   objects.
+  
 #onFocus
   When the tab containing this text editor is hidden and the user does a
   find-in-page in a _different_ tab, Chrome on Mac likes to forget what the
@@ -98,17 +112,21 @@
 
   When performing any action in the editor that leads to this blockMap being rendered, the selection rang  e will be placed in the selectionAfter position.
 
-#modifiers
-  These functions encapsulate some of the most common transaction sequences.
-  `DraftModifier` provides a set of convenience methods that apply
-  modifications to a `ContentState` object based on a target `SelectionState`.
+#selection range
+  An element is selected. Convert this selection range into leaf offset
+  keys and offset values for consumption at the component level. This
+  is common in Firefox, where select-all and triple click behavior leads
+  to entire elements being selected.
  
-  Any change to a `ContentState` should be decomposable into a series of
-  transaction functions that apply the required changes and return output
-  `ContentState` objects.
-
-#richUtils
-  The RichUtils module is a static set of utility functions for rich text editing.
-
-  In each case, these methods accept EditorState objects with relevant parameters and return EditorState   objects.
-
+  Note that we use the `needsRecovery` parameter in the callback here. This
+  is because when certain elements are selected, the behavior for subsequent
+  cursor movement (e.g. via arrow keys) is uncertain and may not match
+  expectations at the component level. For example, if an entire <div> is
+  selected and the user presses the right arrow, Firefox keeps the selection
+  on the <div>. If we allow subsequent keypresses to insert characters
+  natively, they will be inserted into a browser-created text node to the
+  right of that <div>. This is obviously undesirable.
+ 
+  With the `needsRecovery` flag, we inform the caller that it is responsible
+  for manually setting the selection state on the rendered document to
+  ensure proper selection state maintenance.
