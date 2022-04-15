@@ -23,7 +23,7 @@ function onBeforeInput(
         inlineStyle = editorState.getInlineStyle(),
         chars = data
   
-  if(!selection.collapsed()) {
+  if(!selection.getCollapsed()) {
     e.preventDefault()
     _this.sync(
       replaceChars(
@@ -70,8 +70,8 @@ function replaceChars(
   return EditorState.push(
     editorState,
     content,
-    forceSelection,
-    'insert-chars'
+    'insert-chars',
+    forceSelection    
   )
 }
 

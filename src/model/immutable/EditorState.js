@@ -128,8 +128,8 @@ class EditorState {
   static push(
     editorState: EditorState,
     newContent: ContentState,
-    forceSelection: boolean,
-    changeType: string
+    changeType: string,
+    forceSelection: boolean = true,
   ): EditorState {
     const content = editorState.getContent()
     
@@ -234,13 +234,26 @@ function newTreeMapWithBlock(
   const oldContent = editorState.getContent(),
         oldBlockMap = oldContent.getBlockMap(),
         newBlockMap = content.getBlockMap()
-   
-  return editorState.getTreeMap().merge(
-    newBlockMap
-      .toSeq()
-      .filter((block, key) => block != oldBlockMap.get(key))
-      .map(block => Tree.new(block, content, decorator))
+
+  // console.log('oldBlockmap', oldBlockMap.toJS(), '\nnewBLockMap:', newBlockMap.toJS())
+  
+  const filter = newBlockMap
+        .toSeq()
+        .filter((block, key) => block !== oldBlockMap.get(key))
+
+  const newBlocks = filter.map(block => {
+    const _tree = Tree.new(block, content, decorator)
+    return _tree
+  })
+
+  const keys = newBlockMap.keySeq()
+  const _map = editorState.getTreeMap()
+        .filter((_, key) => keys.includes(key))
+        .merge(
+    newBlocks
   )
+
+  return _map
 }
 
 // function newTreeMapWithDecorator() {}

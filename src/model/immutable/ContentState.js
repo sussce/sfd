@@ -41,7 +41,7 @@ class ContentState extends ContentStateRecord {
 
   static createWithArray(blocks: Array<ContentBlockConfig>): ContentState {
     const blockMap = OrderedMap(
-      blocks.map(block=>[block.key, new ContentBlock(block)])
+      blocks.map(block => [block.key, new ContentBlock(block)])
     )
 
     const selection = blockMap.isEmpty()
@@ -54,7 +54,11 @@ class ContentState extends ContentStateRecord {
       selectionAfter: selection
     })
   }
-  
+
+  getBlockArray(): Array<ContentBlock> {
+    return this.getBlockMap().toArray()
+  }
+    
   getBlockMap(): OrderedMap<string, ContentBlock> {
     return this.get('blockMap')
   }
@@ -70,7 +74,7 @@ class ContentState extends ContentStateRecord {
   getSelectionAfter(): SelectionState {
     return this.get('selectionAfter')
   }
-  
+
   findEntity() {}
 }
 

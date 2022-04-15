@@ -20,7 +20,7 @@ class App extends React.Component {
     const decorator = new Decorator(options)
     
     this.state = {
-      editorState: EditorState.createWithText('take @hm tak\nsome', decorator),
+      editorState: EditorState.createWithText('take @hm tak\nsome\ncompo\nstate', decorator),
       onChange: (state)=>this.setState({editorState: state})
     }   
   }
@@ -65,10 +65,10 @@ function findRegex(block, checker, regex) {
 
 const styles = {
   root: {
-    border: "1px solid #eee",
+    //border: "1px solid #eee",
     fontFamily: "'Georgia', serif",
     fontSize: 14,
-    padding: 5,
+    padding: 0,
     width: 300
   },
   editor: {
@@ -77,7 +77,7 @@ const styles = {
     fontSize: 16,
     //marginTop: 20,
     minHeight: 100,
-    //paddingTop: 20
+    padding: 5
   },
   handle: {
     color: "blue",

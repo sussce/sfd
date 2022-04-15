@@ -9,7 +9,7 @@ function onFocus(
 ): void {
   const editorState = _this._latestEditorState
 
-  if(editorState.getSelection().focused()) {
+  if(editorState.getSelection().getFocused()) {
     return
   }
 

@@ -4,6 +4,7 @@
 import type {InlineStyle} from 'InlineStyle'
 const asserts = require('asserts')
 const isElement = require('isElement')
+const isBRElement = require('isBRElement')
 const setRawSelection = require('setRawSelection')
 const TextNode = require('TextNode')
 const styleMap = require('styleMap')
@@ -28,10 +29,12 @@ class Leaf extends React.Component<Props> {
   }
 
   componentDidMount(): void {
+    console.log('didmount')
     this.setSelection()
   }
 
   componentDidUpdate(): void {
+    console.log('didupdate')
     this.setSelection()
   }
 
@@ -64,22 +67,23 @@ class Leaf extends React.Component<Props> {
   setSelection(): void {
     const {selection, start, block, text} = this.props,
           node = this.leaf          
+
+    console.log('node:', node)
     
     asserts(isElement(node), 'Miss node')
     const child = node.firstChild
     asserts(isElement(child), 'Miss child node')
 
-    const isBr = (node: ?Node) => false
     let targetNode
     
     if(child.nodeType == Node.TEXT_NODE) {
       targetNode = child
-    } else if(isBr(child)) {
+    } else if(isBRElement(child)) {
       targetNode = node
     } else {
       targetNode = child.firstChild
     }
-
+ 
     const blockKey = block.getKey(),
           end = start + text.length
     

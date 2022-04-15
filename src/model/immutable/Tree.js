@@ -68,7 +68,7 @@ function findLeaf(charMetas: List<CharMeta>, offset: number): List<LeafRange> {
 }
 
 const equal = (a:any, b:any):boolean => a==b,
-      filter = (a:any):boolean => !0;
+      filter = (a:any):boolean => true;
 
 const Tree = {
   new: (

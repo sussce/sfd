@@ -51,15 +51,15 @@ class SelectionState extends SelectionStateRecord {
     return this.get('focusOffset')
   }
 
-  collapsed(): boolean {
+  getCollapsed(): boolean {
     return this.get('collapsed')
   }
   
-  focused(): boolean {
+  getFocused(): boolean {
     return this.get('focused')
   }
 
-  backward(): boolean {
+  getBackward(): boolean {
     return this.get('backward')
   }
 }

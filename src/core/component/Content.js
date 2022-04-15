@@ -19,10 +19,6 @@ class Content extends React.Component<Props> {
     super(props)
   }
 
-  componentDidUpdate(): void {
-    // console.log(this.props.editorState.getContent().getBlockMap().toJS())
-  }
-  
   render(): React.Node {
     const {editor, editorState} = this.props
     const content = editorState.getContent()
@@ -38,27 +34,32 @@ class Content extends React.Component<Props> {
     editorState: EditorState,
     content: ContentState
   ): React.Node {
-    const trees = editorState.getTreeMap(),
-          decorator = editorState.getDecorator(),
+    const trees = editorState.getTreeMap()
+    const decorator = editorState.getDecorator(),
           selection = editorState.getSelection()
-
+    
     let Blocks = [];
 
-    //blockArray = content.getBlockArray
-    trees.map((tree, key) => {
-      const offsetKey = keyUtil.encodin(key, 0, 0),
-            block = content.getBlockForKey(key),
-            props = {
-              offsetKey,
-              blockKey: key,
-              block,
-              decorator,              
-              selection,
-              tree
-            }
+    const blockArray = content.getBlockArray()
+    for(let i = 0; i < blockArray.length; i++) {
+      const blockKey = blockArray[i][0],
+            block = blockArray[i][1]
+            // blockType = block.getType()
 
-      Blocks.push(<Block key={key} {...props}/>)
-    })
+      const offsetKey = keyUtil.encodin(blockKey, 0, 0),
+            tree = editorState.getTree(blockKey)
+
+      const props = {
+        offsetKey,
+        blockKey,
+        block,
+        decorator,
+        selection,
+        tree
+      }
+
+      Blocks.push(<Block key={blockKey} {...props}/>)
+    }
     
     return (
       <div data-content='true'>

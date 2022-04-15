@@ -1,8 +1,9 @@
 // @flow
 'use strict';
 
-const splitBlock = require('splitBlock')
+const insertNewLine = require('insertNewLine')
 const backspace = require('backspace')
+const backspaceWord = require('backspaceWord')
 const keyMap = require('keyMap')
 const keys = require('keys')
 const Editor = require('Editor')
@@ -27,9 +28,9 @@ function onKeyDown(
   default:
     break;
   }
-  
-  const command = keyMap(e)
 
+  const command = keyMap(e)
+  
   if(!command) {
     return 
   }
@@ -41,7 +42,7 @@ function onKeyDown(
 
   const { editorState } = _this.props,
         newEditorState = handle(command, editorState)
-  
+   
   if(editorState != newEditorState) {
     _this.sync(newEditorState)
   }
@@ -57,7 +58,7 @@ function handle(
   case 'backspaceWord':
     return backspaceWord(editorState)
   case 'split-block':
-    return splitBlock(editorState)
+    return insertNewLine(editorState)
   default:
     return editorState
   }

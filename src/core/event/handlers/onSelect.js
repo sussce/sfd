@@ -11,9 +11,10 @@ function onSelect(_this: Editor): void {
   console.log('SELECT')
   
   const {editorState} = _this.props
-  
+ 
   if(_this._blockSelectEvent ||
-     _this._latestEditorState != _this.props.editorState) {
+     _this._latestEditorState !== _this.props.editorState) {
+    console.log('if blockSelectevent')
     return
   }
 
@@ -25,7 +26,7 @@ function onSelect(_this: Editor): void {
     // forceSelection
     newEditorState = editorState.acceptSelection(selection)
     _this.sync(newEditorState)
-  }
+  };
 }
 
 module.exports = onSelect

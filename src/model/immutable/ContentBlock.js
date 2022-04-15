@@ -3,7 +3,9 @@
 
 import type {InlineStyle} from 'InlineStyle'
 const CharMeta = require('CharMeta')
-const {Record, List} = require('immutable')
+const {Record, List, OrderedSet} = require('immutable')
+
+const EMPTY_SET = OrderedSet()
 
 export type ContentBlockConfig = {
   key: string,
@@ -40,7 +42,7 @@ class ContentBlock extends ContentBlockRecord {
 
   getStyleAt(offset: numeber): InlineStyle {
     const charMeta:CharMeta = this.getCharMetas().get(offset)
-    return charMeta.getStyle()
+    return charMeta ? charMeta.getStyle() : EMPTY_SET
   }
 }
 

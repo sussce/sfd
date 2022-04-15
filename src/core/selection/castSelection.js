@@ -6,9 +6,9 @@ const SelectionState = require('SelectionState')
 
 function castSelection(
   editorState: EditorState,
-  anchorKeys: ?{ [ key: string ]: string },
+  anchorKeys: ?{[key: string]: string},
   anchorOffset: number,
-  focusKeys: ?{ [ key: string ]: string },
+  focusKeys: ?{[key: string]: string},
   focusOffset: number
 ): SelectionState {
   const selection = editorState.getSelection()
@@ -17,8 +17,9 @@ function castSelection(
     return selection
   }
   
-  const anchorTree = editorState.getTree(anchorKeys.blockKey),
-        anchorLeaf = anchorTree.getIn([
+  const anchorTree = editorState.getTree(anchorKeys.blockKey)
+
+  const anchorLeaf = anchorTree.getIn([
           anchorKeys.decoratorKey,
           'leaves',
           anchorKeys.leafKey
@@ -41,7 +42,7 @@ function castSelection(
         focusLeafStart = focusLeaf.get('start'),
         focusLeafEnd = focusLeaf.get('end'),
         focusBlockOffset = focusLeafStart + focusOffset
-
+  
   const areEqual = selection.getAnchorKey() === anchorKeys.blockKey &&
         selection.getAnchorOffset() === anchorBlockOffset &&
         selection.getFocusKey() === focusKeys.blockKey &&
@@ -66,8 +67,8 @@ function castSelection(
           .getContent()
           .getBlockMap()
           .keySeq()
-          .skipUntil(key => key === anchorKeys.blockKey
-                     || key === focusKeys.blockKey)
+          .skipUntil(key => key === anchorKeys.blockKey ||
+                     key === focusKeys.blockKey)
           .first()
     backward = startKey === focusKeys.blockKey
   }

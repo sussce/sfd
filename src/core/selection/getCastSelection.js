@@ -25,7 +25,7 @@ function getCastSelection(
 
   const anchorIsTextNode = anchorNode.nodeType == Node.TEXT_NODE,
         focusIsTextNode = focusNode.nodeType == Node.TEXT_NODE
-
+  
   if(anchorIsTextNode && focusIsTextNode) {
     return castSelection(
       editorState,
@@ -36,14 +36,57 @@ function getCastSelection(
     )
   }
 
+  let anchors, focuses;
+  
   if(anchorIsTextNode) {
-    // castSelectionWithTextNode
-    // castSelectionWithNonTextNode
-  } else if(focusIsTextNode) {
-
-  } else {
+    anchors = {
+      key: asserts(findOffsetKey(anchorNode, root), 'Non node'),
+      offset: anchorOffset
+    }
+    focuses = getPointForNonTextNode(focusNode, focusOffset, root)
     
+  } else if(focusIsTextNode) {
+    anchors = getPointForNonTextNode(anchorNode, anchorOffset, root),
+    focuses = {
+      key: asserts(findOffsetKey(focusNode, root), 'Non node'),
+      offset: focusOffset
+    }
+  } else {
+    anchors = getPointForNonTextNode(anchorNode, anchorOffset, root)
+    focuses = getPointForNonTextNode(focusNode, focusOffset, root)
+    
+    // if(anchorNode === focusNode && anchorOffset === focusOffset) {
+    //   recovery
+    // }
   }
+
+  return castSelection(
+    editorState,
+    anchors.key,
+    anchors.offset,
+    focuses.key,
+    focuses.offset
+  )
+}
+
+function getPointForNonTextNode(
+  node: Node,
+  offset: number,
+  root: ?HTMLElement
+): {
+  key: ?{[key: string]: string},
+  offset: number
+} {
+  const offsetKey = findOffsetKey(node, root),
+        blockKey = offsetKey.blockKey
+
+  let key: ?{[key: string]: string} = null
+  
+  if(offsetKey !== null && offset === 0) {
+    key = offsetKey
+  }
+  
+  return {key, offset: 0}
 }
 
 module.exports = getCastSelection

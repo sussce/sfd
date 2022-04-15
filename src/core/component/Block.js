@@ -58,7 +58,7 @@ class Block extends React.Component<Props> {
         const leafProps = {
           offsetKey,
           text: text.slice(start, end),
-          inlineStyle: block.getStyleAt(start),          
+          inlineStyle: block.getStyleAt(start),
           start,
           block,
           selection

@@ -1,6 +1,8 @@
 // @flow
 'use strict';
 
+const {List} = require('immutable')
+
 function insertToList(
   list: List<T>,
   partial: List<T>,

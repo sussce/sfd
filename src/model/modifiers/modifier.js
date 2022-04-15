@@ -2,10 +2,12 @@
 'use strict';
 
 import type {InlineStyle} from 'InlineStyle'
-
+const splitBlock = require('splitBlock')
+const removeRange = require('removeRange')
 const insertToList = require('insertToList')
 const EditorState = require('EditorState')
 const ContentState = require('ContentState')
+const SelectionState = require('SelectionState')
 const CharMeta = require('CharMeta')
 const { List, Repeat } = require('immutable')
 
@@ -21,7 +23,7 @@ const modifier = {
           block = content.getBlockForKey(startKey),
           text = block.getText()
 
-    if(!selection.collapsed()) {}
+    if(!selection.getCollapsed()) {}
 
     const charMeta = CharMeta.create({
       style: inlineStyle || OrderedSet()
@@ -51,15 +53,6 @@ const modifier = {
     })
   },
 
-  insertText(
-    content: ContentState,
-    selection: SelectionState,
-    chars: string,
-  ): ContentState {
-    console.log('modifier:insertTtext')
-    return content
-  },
-
   removeRange(
     content: ContentState
   ): ContentState {
@@ -72,9 +65,16 @@ const modifier = {
     selection: SelectionState
   ): ContentState {
     console.log('modifier:splitBlock')
-    return content
+
+    // withoutEntity = removeEntity()
+    content = content.merge({
+      selectionAfter: selection
+    })
+    
+    const removal = removeRange(content, selection)
+    
+    return splitBlock(removal, removal.getSelectionAfter())
   }
 }
-
 
 module.exports = modifier

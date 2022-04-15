@@ -13,7 +13,7 @@ function keyMap(e: KeyboardEvent): KeyCommand {
   case keys.BACKSPACE:
     return 'backspace';
   case keys.B:
-    return ctrlKey ? 'backspace' : null 
+    return ctrlKey ? 'backspaceWord' : null 
   default:
     return null
   }

@@ -2,6 +2,7 @@
 'use strict';
 
 import type {RawSelection} from 'RawSelection'
+const getDocument = require('getDocument')
 const getRawSelection = require('getRawSelection')
 
 function setRawSelection(
@@ -25,7 +26,7 @@ function setRawSelection(
         start <= focusOffset &&
         focusOffset <= end,
         
-        backward = selection.backward()
+        backward = selection.getBackward()
   
   if(hasAnchor && hasFocus) {
     rawSelection.removeAllRanges()
@@ -90,17 +91,17 @@ function setRawSelection(
 
 function addAnchor(
   selection: RawSelection,
-  node: Node,
+  node: ?Node,
   offset: number
 ): void {
-  const range = node.ownerDocument.createRange();
+  const range = getDocument(node).createRange();
   range.setStart(node, offset)
   selection.addRange(range)
 }
 
 function addFocus(
   selection: RawSelection,
-  node: Node,
+  node: ?Node,
   offset: number
 ): void {
   if(selection.extend) {
