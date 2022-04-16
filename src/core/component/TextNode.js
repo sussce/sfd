@@ -22,7 +22,7 @@ class TextNode extends React.Component<Props> {
   // }
   
   render(): React.Node {
-    const newLine = this.props.children == ''
+    const newLine = this.props.children === ''
 
     return newLine ? (
       <br data-text='true'/>

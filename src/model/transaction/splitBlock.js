@@ -47,12 +47,6 @@ function splitBlock(
     ],
     blockAfter
   ).toOrderedMap()
-
-  console.log(
-    'above)', blockAbove.toJS(),
-    '\nbelow)', blockBelow.toJS(),
-    '\nnewBlockMap', blockMap.toJS()
-  )
   
   return content.merge({
     blockMap: newBlockMap,

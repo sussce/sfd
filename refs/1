@@ -130,3 +130,7 @@
   With the `needsRecovery` flag, we inform the caller that it is responsible
   for manually setting the selection state on the rendered document to
   ensure proper selection state maintenance.
+
+#mustPreventNative
+  Browsers tend to insert text in weird places in the DOM when typing at
+  the start of a leaf, so we'll handle it ourselves.

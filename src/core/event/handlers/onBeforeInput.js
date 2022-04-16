@@ -2,6 +2,7 @@
 'use strict';
 
 import type {InlineStyle} from 'InlineStyle'
+const isSelectionAtLeafStart = require('isSelectionAtLeafStart')
 const EditorState = require('EditorState')
 const Editor = require('Editor')
 const modifier = require('modifier')
@@ -14,7 +15,7 @@ function onBeforeInput(
   
   const editorState = _this._latestEditorState,
         {data} = e
-  
+
   if(!data) {
     return
   }
@@ -44,9 +45,16 @@ function onBeforeInput(
   )
 
   let preventDefault = false
-  if(!preventDefault) {}
+  if(!preventDefault) {
+    preventDefault = isSelectionAtLeafStart(
+      _this._committedEditorState
+    )
+  }
   if(preventDefault) {
     e.preventDefault()
+    newEditorState = EditorState.set(newEditorState, {
+      forceSelection: true
+    })
     _this.sync(newEditorState)
     return
   }
@@ -66,7 +74,7 @@ function replaceChars(
     chars,
     inlineStyle
   )
-
+  
   return EditorState.push(
     editorState,
     content,

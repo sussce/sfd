@@ -20,7 +20,7 @@ class App extends React.Component {
     const decorator = new Decorator(options)
     
     this.state = {
-      editorState: EditorState.createWithText('take @hm tak\nsome\ncompo\nstate', decorator),
+      editorState: EditorState.createWithText('take @hm tak\nsome\ncompo', decorator),
       onChange: (state)=>this.setState({editorState: state})
     }   
   }

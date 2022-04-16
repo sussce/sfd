@@ -56,6 +56,7 @@ class Editor extends React.Component<Props> {
   }
   _blockSelectEvent: boolean
   _latestEditorState: EditorState
+  _committedEditorState: EditorState
   _pendingEditorState: ?EditorState
   onKeyDown: Function
   onBeforeInput: Function
@@ -67,6 +68,7 @@ class Editor extends React.Component<Props> {
 
     this._blockSelectEvent = false
     this._latestEditorState = props.editorState
+    this._committedEditorState = props.editorState
     this.onFocus = this.buildHandler('onFocus')
     this.onKeyDown = this.buildHandler('onKeyDown')
     this.onBeforeInput = this.buildHandler('onBeforeInput')
@@ -82,6 +84,7 @@ class Editor extends React.Component<Props> {
   
   componentDidUpdate(): void {
     this._latestEditorState = this.props.editorState
+    this._committedEditorState = this.props.editorState
     this._blockSelectEvent = false
   }
 

@@ -29,12 +29,10 @@ class Leaf extends React.Component<Props> {
   }
 
   componentDidMount(): void {
-    console.log('didmount')
     this.setSelection()
   }
 
   componentDidUpdate(): void {
-    console.log('didupdate')
     this.setSelection()
   }
 
@@ -66,10 +64,8 @@ class Leaf extends React.Component<Props> {
 
   setSelection(): void {
     const {selection, start, block, text} = this.props,
-          node = this.leaf          
+          node = this.leaf
 
-    console.log('node:', node)
-    
     asserts(isElement(node), 'Miss node')
     const child = node.firstChild
     asserts(isElement(child), 'Miss child node')
