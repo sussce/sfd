@@ -1,7 +1,9 @@
+// Modifier
 // @flow
 'use strict';
 
 import type {InlineStyle} from 'InlineStyle'
+const insertChars = require('insertChars')
 const splitBlock = require('splitBlock')
 const removeRange = require('removeRange')
 const insertToList = require('insertToList')
@@ -9,7 +11,7 @@ const EditorState = require('EditorState')
 const ContentState = require('ContentState')
 const SelectionState = require('SelectionState')
 const CharMeta = require('CharMeta')
-const { List, Repeat } = require('immutable')
+const {List, Repeat} = require('immutable')
 
 const modifier = {
   replaceChars(
@@ -18,39 +20,21 @@ const modifier = {
     chars: string,
     inlineStyle: InlineStyle
   ): ContentState {
-    const startKey = selection.getAnchorKey(),
-          startOffset = selection.getAnchorOffset(),
-          block = content.getBlockForKey(startKey),
-          text = block.getText()
+    console.log('modifier:replaceChars')
 
-    if(!selection.getCollapsed()) {}
-
-    const charMeta = CharMeta.create({
-      style: inlineStyle || OrderedSet()
-      // entityKey
+    // withoutEntity = removeEntity()
+    content = content.merge({
+      selectionAfter: selection
     })
     
-    const newBlock = block.merge({
-      text: text.slice(0, startOffset)
-        + chars
-        + text.slice(startOffset, text.length),
-      charMetas: insertToList(
-        block.getCharMetas(),
-        Repeat(charMeta, chars.length).toList(),
-        startOffset
-      )
-    })
+    const removalRange = removeRange(content, selection)
     
-    const newOffset = startOffset + chars.length
-    
-    return content.merge({
-      blockMap: content.getBlockMap().set(startKey, newBlock),
-      selectionAfter: selection.merge({
-        anchorOffset: newOffset,
-        focusOffset: newOffset
-      })
-      // entityMap
-    })
+    return insertChars(
+      removalRange,
+      removalRange.getSelectionAfter(),
+      chars,
+      inlineStyle
+    )
   },
 
   removeRange(

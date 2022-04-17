@@ -24,6 +24,15 @@ const defaultConfig: ContentBlockConfig = {
 const ContentBlockRecord = (Record(defaultConfig):any)
 
 class ContentBlock extends ContentBlockRecord {
+  getLength(): number {
+    return this.getText().length
+  }
+  
+  getStyleAt(offset: numeber): InlineStyle {
+    const charMeta:CharMeta = this.getCharMetas().get(offset)
+    return charMeta ? charMeta.getStyle() : EMPTY_SET
+  }
+  
   getKey(): string {
     return this.get('key')
   }
@@ -38,11 +47,6 @@ class ContentBlock extends ContentBlockRecord {
 
   getCharMetas(): List<CharMeta> {
     return this.get('charMetas')
-  }
-
-  getStyleAt(offset: numeber): InlineStyle {
-    const charMeta:CharMeta = this.getCharMetas().get(offset)
-    return charMeta ? charMeta.getStyle() : EMPTY_SET
   }
 }
 

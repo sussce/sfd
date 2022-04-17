@@ -79,7 +79,7 @@ function replaceChars(
     editorState,
     content,
     'insert-chars',
-    forceSelection    
+    forceSelection
   )
 }
 

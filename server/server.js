@@ -80,7 +80,7 @@ const styles = {
     padding: 5
   },
   handle: {
-    color: "blue",
+    color: "greyblue9",
     cursor: "pointer"
   }
 }

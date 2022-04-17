@@ -19,6 +19,7 @@ function onSelect(_this: Editor): void {
   }
 
   const selection = getCastSelection(editorState, getContentEditable(_this))
+  console.log('sel)', selection.toJS())
   
   let newEditorState: EditorState 
 

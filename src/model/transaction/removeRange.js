@@ -1,3 +1,4 @@
+// Transaction
 // @flow
 'use strict';
 
@@ -11,6 +12,7 @@ function removeRange(
   console.log('trans:removeRange')
 
   if(selection.getCollapsed()) {
+    console.log('trans:collapsed')
     return content
   }
   

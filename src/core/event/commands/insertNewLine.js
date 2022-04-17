@@ -7,8 +7,6 @@ const EditorState = require('EditorState')
 function insertNewLine(
   editorState: EditorState
 ): EditorState {
-  console.log('cmd:split-block')
-
   const newContent = modifier.splitBlock(
     editorState.getContent(),
     editorState.getSelection()

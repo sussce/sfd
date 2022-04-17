@@ -35,6 +35,18 @@ class SelectionState extends SelectionStateRecord {
     })
   }
 
+  getStartKey(): string {
+    return this.getBackward()
+      ? this.getFocusKey()
+      : this.getAnchorKey()
+  }
+
+  getStartOffset(): number {
+    return this.getBackward()
+      ? this.getFocusOffset()
+      : this.getAnchorOffset()
+  }
+  
   getAnchorKey(): string {
     return this.get('anchorKey')
   }

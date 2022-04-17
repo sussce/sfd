@@ -156,6 +156,8 @@ class EditorState {
     
     return EditorState.set(editorState, options)  
   }
+
+  // getUndo
   
   acceptSelection(selection: SelectionState): EditorState {
     return  EditorState.set(this, { selection: selection })
@@ -170,6 +172,56 @@ class EditorState {
       selection: selection,
       forceSelection: true
     })
+  }
+  
+  getTree(key: string): List<any> {
+    return this.getTreeMap().get(key)
+  }
+  
+  getInlineStyle(): InlineStyle {
+    const selection = this.getSelection(),
+          content = this.getContent()
+    
+    if(selection.getCollapsed()) {
+      return this.getInlineStyleCollapsed(content, selection)
+    }
+    return this.getInlineStyleNonCollapsed(content, selection)
+  }
+
+  getInlineStyleCollapsed(
+    content: ContentState,
+    selection: SelectionState
+  ): InlineStyle {
+    const startKey = selection.getStartKey(),
+          startOffset = selection.getStartOffset(),
+          block = content.getBlockForKey(startKey)
+
+    if(startOffset < block.getLength()) {
+      return block.getStyleAt(startOffset)
+    }
+    if(block.getLength()) {
+      return block.getStyleAt(startOffset - 1)
+    }
+    return block.getStyleAt(0)
+    // return findInlineStyleUpward
+  }
+
+  getInlineStyleNonCollapsed(
+    content: ContentState,
+    selection: SelectionState
+  ): InlineStyle {
+    const startKey = selection.getStartKey(),
+          startOffset = selection.getStartOffset,
+          block = content.getBlockForKey(startKey)
+
+    if(startOffset < block.getLength()) {
+      return block.getStyleAt(startOffset)
+    }
+    if(block.getLength()) {
+      return block.getStyleAt(startOffset - 1)
+    }
+    return block.getStyleAt(0)
+    // return findInlineStyleUpward
   }
   
   getContent(): ContentState {
@@ -188,29 +240,6 @@ class EditorState {
     return this.immu.get('treeMap')
   }
 
-  getTree(key: string): List<any> {
-    return this.getTreeMap().get(key)
-  }
-  
-  getInlineStyle(): InlineStyle {
-    const selection = this.getSelection(),
-          content = this.getContent()
-    
-    // if(selection.isCollapsed())
-    return this.getInlineStyleCollapsed(content, selection) 
-  }
-
-  getInlineStyleCollapsed(
-    content: ContentState,
-    selection: SelectionState
-  ): InlineStyle {
-    const block = content.getBlockForKey(selection.getAnchorKey())
-    return block.getStyleAt(selection.getAnchorOffset()-1)
-  }
-
-  // getInlinestyleNonCollapsed
-  // getUndo
-  
   get immu(): EditorStateRecord {
     return this._immu
   }
@@ -257,5 +286,6 @@ function newTreeMapWithBlock(
 }
 
 // function newTreeMapWithDecorator() {}
+// function findInlineStyleUpward() {}
 
 module.exports = EditorState
