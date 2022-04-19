@@ -134,3 +134,10 @@
 #mustPreventNative
   Browsers tend to insert text in weird places in the DOM when typing at
   the start of a leaf, so we'll handle it ourselves.
+
+#entity
+  An entity is an object that represents metadata for a range of text within a Draft editor. It has three  properties:
+
+  type: A string that indicates what kind of entity it is, e.g. 'LINK', 'MENTION', 'PHOTO'.
+  mutability: Not to be confused with immutability a la immutable-js, this property denotes the behavior   of a range of text annotated with this entity object when editing the text range within the editor. Thi  s is addressed in greater detail below.
+  data: An optional object containing metadata for the entity. For instance, a 'LINK' entity might contai  n a data object that contains the href value for that link.
