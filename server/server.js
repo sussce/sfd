@@ -18,7 +18,7 @@ class App extends React.Component {
     }]
 
     const decorator = new Decorator(options)
-    
+     
     this.state = {
       editorState: EditorState.createWithText('take @hm tak\nsome\ncompo', decorator),
       onChange: (state)=>this.setState({editorState: state})
@@ -80,7 +80,7 @@ const styles = {
     padding: 5
   },
   handle: {
-    color: "greyblue9",
+    color: "blue",
     cursor: "pointer"
   }
 }

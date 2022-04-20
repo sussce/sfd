@@ -22,26 +22,33 @@ const modifier = {
   ): ContentState {
     console.log('modifier:replaceChars')
 
-    // withoutEntity = removeEntity()
-    content = content.merge({
+    // noEntity = removeEntity()
+    const noEntity = content.merge({
       selectionAfter: selection
     })
     
-    const removalRange = removeRange(content, selection)
+    const noRange = removeRange(noEntity, selection)
     
     return insertChars(
-      removalRange,
-      removalRange.getSelectionAfter(),
+      noRange,
+      noRange.getSelectionAfter(),
       chars,
       inlineStyle
     )
   },
 
   removeRange(
-    content: ContentState
+    content: ContentState,
+    selection: SelectionState
   ): ContentState {
     console.log('modifier:removeRange')
-    return content
+
+    // noEntity = removeEntity
+    const noEntity = content.merge({
+      selectionAfter: selection
+    })
+
+    return removeRange(noEntity, selection)
   },
 
   splitBlock(
@@ -50,14 +57,14 @@ const modifier = {
   ): ContentState {
     console.log('modifier:splitBlock')
 
-    // withoutEntity = removeEntity()
-    content = content.merge({
+    // noEntity = removeEntity()
+    const noEntity = content.merge({
       selectionAfter: selection
     })
     
-    const removal = removeRange(content, selection)
+    const noRange = removeRange(noEntity, selection)
     
-    return splitBlock(removal, removal.getSelectionAfter())
+    return splitBlock(noRange, noRange.getSelectionAfter())
   }
 }
 

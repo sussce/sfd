@@ -14,12 +14,10 @@ function onSelect(_this: Editor): void {
  
   if(_this._blockSelectEvent ||
      _this._latestEditorState !== _this.props.editorState) {
-    console.log('if blockSelectevent')
     return
   }
 
   const selection = getCastSelection(editorState, getContentEditable(_this))
-  console.log('sel)', selection.toJS())
   
   let newEditorState: EditorState 
 
@@ -27,7 +25,7 @@ function onSelect(_this: Editor): void {
     // forceSelection
     newEditorState = editorState.acceptSelection(selection)
     _this.sync(newEditorState)
-  };
+  }
 }
 
 module.exports = onSelect

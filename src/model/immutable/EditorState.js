@@ -164,7 +164,7 @@ class EditorState {
   }
 
   forceSelection(selection: SelectionState): EditorState {
-    if(!selection.focused()) {
+    if(!selection.getFocused()) {
       selection = selection.merge({ focused: true })
     }
     

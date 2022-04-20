@@ -12,25 +12,14 @@ function removeRange(
   console.log('trans:removeRange')
 
   if(selection.getCollapsed()) {
-    console.log('trans:collapsed')
     return content
   }
   
-  let startKey = selection.getAnchorKey(),
-      startOffset = selection.getAnchorOffset(),
-      endKey = selection.getFocusKey(),
-      endOffset = selection.getFocusOffset()
+  let startKey = selection.getStartKey(),
+      startOffset = selection.getStartOffset(),
+      endKey = selection.getEndKey(),
+      endOffset = selection.getEndOffset()
 
-  if(selection.getBackward()) {
-    let tempKey = startKey,
-        tempOffset = startOffset
-
-    startKey = endKey,
-    startOffset = endOffset,
-    endKey = tempKey,
-    endOffset = tempOffset
-  }
-  
   const blockMap = content.getBlockMap(),
         startBlock = blockMap.get(startKey),
         endBlock = blockMap.get(endKey)

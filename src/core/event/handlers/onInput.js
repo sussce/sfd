@@ -14,7 +14,6 @@ function onInput(
   console.log('INPUT')
 
   if(_this._pendingEditorState != undefined) {
-    console.log(_this._pendingEditorState.getContent().toJS())
     _this.sync(_this._pendingEditorState)
     _this._pendingEditorState = undefined
   }
