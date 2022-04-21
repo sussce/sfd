@@ -31,23 +31,65 @@ function removeChars(
   content: ContentState,
   selection: SelectionState
 ): ContentState {
-  console.log('removeChars')
+  console.log('cmd:backspace:removeChars')
 
   let target = selection
   if(selection.getCollapsed()) {
-    console.log('sel:', selection.toJS())
-    target = moveSelectionBackward(content, selection)    
-    return removeRange(content, target)
+    if(atStartOfContent(content, target)) {
+      return content
+    }
+    
+    target = moveSelectionBackward(content, selection)
   }
   
-  return modifier.removeRange(content, selection)
+  return modifier.removeRange(content, target)
 }
 
 function moveSelectionBackward(
   content: ContentState,
   selection: SelectionState
 ): SelectionState {
-  return selection
+  console.log('moveSelectionbackward')
+
+  const startKey = selection.getStartKey(),
+        startOffset = selection.getStartOffset()
+ 
+  let newKey = startKey,
+      newOffset = startOffset - 1
+  
+  if(anchorOffset === 0) {
+    const prevBlock = content.getBlockMap()
+          .toSeq()
+          .reverse()
+          .skipUntil((_, key) => key === anchorKey)
+          .rest()
+          .first()
+
+    newKey = prevBlock.getKey()
+    newOffset = prevBlock.getLength()
+  }
+
+  return selection.merge({
+    focusKey: newKey,
+    focusOffset: newOffset,
+    collapsed: false,
+    backward: true
+  })
+}
+
+function atStartOfContent(
+  content: ContentState,
+  selection: SelectionState
+): boolean {
+  const blockMap = content.getBlockMap(),
+        startKey = selection.getStartKey(),
+        startOffset = selection.getStartOffset()
+
+  return startOffset === 0 &&
+    startKey === content
+    .getBlockMap()
+    .keySeq()
+    .first()
 }
 
 module.exports = backspace
