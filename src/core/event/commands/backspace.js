@@ -51,17 +51,19 @@ function moveSelectionBackward(
 ): SelectionState {
   console.log('moveSelectionbackward')
 
+  console.log('sel)', selection ? selection.toJS() : 'null')
+  
   const startKey = selection.getStartKey(),
         startOffset = selection.getStartOffset()
  
   let newKey = startKey,
       newOffset = startOffset - 1
   
-  if(anchorOffset === 0) {
+  if(startOffset === 0) {
     const prevBlock = content.getBlockMap()
           .toSeq()
           .reverse()
-          .skipUntil((_, key) => key === anchorKey)
+          .skipUntil((_, key) => key === startKey)
           .rest()
           .first()
 

@@ -127,7 +127,7 @@ class Editor extends React.Component<Props> {
     const withHolder = placeHolder && !!placeHolder.toString().trim(),
           withContent = editorState.getContent().getBlockMap()
           .some(block=>!!block.getText().length)
-
+    
     return withHolder && !withContent ? (
       <div className='editor-placeholder'>
         {placeHolder}

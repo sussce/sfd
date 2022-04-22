@@ -12,6 +12,8 @@ class App extends React.Component {
   constructor() {
     super()
 
+    this.link = this.link.bind(this)
+    
     const options = [{
       strategy: findHandle,
       component: Handle
@@ -24,14 +26,28 @@ class App extends React.Component {
       onChange: (state)=>this.setState({editorState: state})
     }   
   }
+
+  link(e) {
+    console.log('link', e)
+  }
   
   render() {
     return (
       <div className='editor-root' style={styles.root}>
+        <div className='editor-panel' style={styles.panel}>
+          <span
+            className='editor-link'
+            style={styles.link}
+            onClick={this.link}>
+            link
+          </span>
+          <span>h</span>
+        </div>
         <div className='editor' style={styles.editor}>
           <Editor
             editorState={this.state.editorState}
-            onChange={this.state.onChange}/>
+            onChange={this.state.onChange}
+            placeHolder="enter text"/>
         </div>
       </div>
     )
@@ -82,6 +98,11 @@ const styles = {
   handle: {
     color: "blue",
     cursor: "pointer"
+  },
+  panel: {},
+  link: {
+    cursor: "pointer",
+    marginRight: 10
   }
 }
 
