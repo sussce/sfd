@@ -25,8 +25,11 @@ function onInput(
         {anchorNode, anchorOffset, isCollapsed} = rawSelection,
         domText = anchorNode.textContent
   
-  const anchorKeys = asserts(findOffsetKey(anchorNode, _this.editor), 'Null node'),
-        {start, end} = editorState
+  const anchorKeys = asserts(
+    findOffsetKey(anchorNode, _this.editor), 'Null node'
+  )
+  
+  const {start, end} = editorState
         .getTree(anchorKeys.blockKey)
         .getIn([
           anchorKeys.decoratorKey,

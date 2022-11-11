@@ -20,7 +20,7 @@ function onFocus(
   const selection = editorState.getSelection().merge({ focused: true })
 
   // https://crbug.com/540004
-  const isBrowser = () => false
+  const isBrowser = () => true;
   if(isBrowser('Chrome < 60.0.3081.0')) {
     _this.sync(editorState.forceSelection(selection))
   } else {

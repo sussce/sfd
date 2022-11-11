@@ -14,6 +14,7 @@ module.system.node.resolve_dirname=src/core/event/handlers
 module.system.node.resolve_dirname=src/core/event/commands
 module.system.node.resolve_dirname=src/model
 module.system.node.resolve_dirname=src/model/constants
+module.system.node.resolve_dirname=src/model/entity
 module.system.node.resolve_dirname=src/model/immutable
 module.system.node.resolve_dirname=src/model/modifiers
 module.system.node.resolve_dirname=src/model/transaction

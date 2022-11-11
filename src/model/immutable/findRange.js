@@ -5,10 +5,10 @@ const {List} = require('immutable')
 
 function findRange(
   list: List<any>,
-  equal: (a:any, b:any)=>boolean,
-  filter: (a:any)=>boolean,
-  callback: (start:number, end:number)=>void
-):void {
+  equal: (a: any, b: any) => boolean,
+  filter: (a: any) => boolean,
+  callback: (start: number, end: number) => void
+): void {
   if(list.isEmpty()) {
     return
   }

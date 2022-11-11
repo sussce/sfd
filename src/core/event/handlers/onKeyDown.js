@@ -12,19 +12,21 @@ function onKeyDown(
   _this: Editor,
   e: SyntheticKeyboardEvent<HTMLElement>
 ): void {
+  console.log('KEYDOWN');
+  
   const { keyMap } = _this.props,
         { key, keyCode } = e
 
   // space, return
   switch(keyCode) {
-  case keys.RETURN:
+/*  case keys.RETURN:
     console.log('key:return')
     e.preventDefault()
-    break
-  case keys.SPACE:
+    break */
+/*  case keys.SPACE:
     console.log('key:space')
     e.preventDefault()
-    break;
+    break; */
   default:
     break;
   }

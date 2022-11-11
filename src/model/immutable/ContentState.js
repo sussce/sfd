@@ -1,7 +1,10 @@
 // @flow
 'use strict';
 
+import type {Mutability} from 'Mutability'
 import type {ContentBlockConfig} from 'ContentBlock'
+const EntityUtil = require('EntityUtil')
+const Entity = require('Entity')
 const ContentBlock = require('ContentBlock')
 const SelectionState = require('SelectionState')
 const CharMeta = require('CharMeta')
@@ -11,14 +14,15 @@ const {Record, OrderedMap, List, Repeat} = require('immutable')
 type ContentStateConfig = {
   blockMap: ?OrderedMap<string, ContentBlock>,
   selectionBefore: ?SelectionState,
-  selectionAfter: ?SelectionState
-  // entityMap
+  selectionAfter: ?SelectionState,
+  entityMap: ?any
 }
 
 const defaultConfig: ContentStateConfig = {
   blockMap: null,
   selectionBefore: null,
-  selectionAfter: null
+  selectionAfter: null,
+  entityMap: null
 }
 
 const ContentStateRecord = (Record(defaultConfig):any)
@@ -55,6 +59,23 @@ class ContentState extends ContentStateRecord {
     })
   }
 
+  createEntity(
+    type: string,
+    mutability: Mutability,
+    data: Object
+  ): string {
+    EntityUtil.create(type, mutability, data)
+    return this
+  }
+
+  getEntity(key: number): ?Entity {
+    return EntityUtil.get(key)
+  }
+
+  getEntityKey(): string {
+    return EntityUtil.getLastKey()
+  }
+  
   getBlockArray(): Array<ContentBlock> {
     return this.getBlockMap().toArray()
   }
@@ -75,7 +96,9 @@ class ContentState extends ContentStateRecord {
     return this.get('selectionAfter')
   }
 
-  findEntity() {}
+  getEntityMap(): ?any {
+    return this.get('entityMap')
+  }
 }
 
 module.exports = ContentState

@@ -3,6 +3,8 @@
 'use strict';
 
 import type {InlineStyle} from 'InlineStyle'
+// const applyStyle = require('applyStyle')
+const applyEntity = require('applyEntity')
 const insertChars = require('insertChars')
 const splitBlock = require('splitBlock')
 const removeRange = require('removeRange')
@@ -14,6 +16,27 @@ const CharMeta = require('CharMeta')
 const {List, Repeat} = require('immutable')
 
 const modifier = {
+  applyStyle(
+    content: ContentState,
+    selection: SelectionState,
+    style: InlineStyle
+  ): ContentState {
+    console.log('modifier:applyStyle')
+
+    return applyStyle(content, selection, style)
+  },
+  
+  applyEntity(
+    content: ContentState,
+    selection: SelectionState,
+    entityKey: string
+  ): ContentState {
+    console.log('modifier:applyEntity')
+
+    // removeEntitiesAtEdges
+    return applyEntity(content, selection, entityKey)
+  },
+  
   replaceChars(
     content: ContentState,
     selection: SelectionState,
@@ -22,16 +45,16 @@ const modifier = {
   ): ContentState {
     console.log('modifier:replaceChars')
 
-    // noEntity = removeEntity()
-    const noEntity = content.merge({
+    // withoutEntity = removeEntity()
+    const withoutEntity = content.merge({
       selectionAfter: selection
     })
     
-    const noRange = removeRange(noEntity, selection)
+    const withoutRange = removeRange(withoutEntity, selection)
     
     return insertChars(
-      noRange,
-      noRange.getSelectionAfter(),
+      withoutRange,
+      withoutRange.getSelectionAfter(),
       chars,
       inlineStyle
     )
@@ -43,12 +66,12 @@ const modifier = {
   ): ContentState {
     console.log('modifier:removeRange')
 
-    // noEntity = removeEntity
-    const noEntity = content.merge({
+    // withoutEntity = removeEntity
+    const withoutEntity = content.merge({
       selectionAfter: selection
     })
 
-    return removeRange(noEntity, selection)
+    return removeRange(withoutEntity, selection)
   },
 
   splitBlock(
@@ -57,14 +80,14 @@ const modifier = {
   ): ContentState {
     console.log('modifier:splitBlock')
 
-    // noEntity = removeEntity()
-    const noEntity = content.merge({
+    // withoutEntity = removeEntity()
+    const withoutEntity = content.merge({
       selectionAfter: selection
     })
     
-    const noRange = removeRange(noEntity, selection)
+    const withoutRange = removeRange(withoutEntity, selection)
     
-    return splitBlock(noRange, noRange.getSelectionAfter())
+    return splitBlock(withoutRange, withoutRange.getSelectionAfter())
   }
 }
 

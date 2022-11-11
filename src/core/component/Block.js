@@ -37,7 +37,7 @@ class Block extends React.Component<Props> {
   }
 
   renderChildren(): React.Node[] {
-    const { blockKey, block, tree, decorator, selection, editor } = this.props
+    const { blockKey, block, content, tree, decorator, selection, editor } = this.props
     const text = block.getText()
 
     return tree.map((blockRange, key1) => {
@@ -79,8 +79,9 @@ class Block extends React.Component<Props> {
               blockKey,
               start: leaves.first().get('start'),
               end: leaves.first().get('end'),
-              text: text.slice(start, end)
-              // entityKey: content.getEntityAt()
+              text: text.slice(start, end),
+              content,
+              entityKey: block.getEntityAt(blockRange.get('start')),
             }
 
       return (

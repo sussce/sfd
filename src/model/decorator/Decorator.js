@@ -19,7 +19,10 @@ class Decorator {
     this._decorators = decorators
   }
 
-  getDecorations(block: ContentBlock, content: ContentState): List<string> {
+  getDecorations(
+    block: ContentBlock,
+    content: ContentState
+  ): List<string> {
     const list = Array(block.getText().length).fill(null)
     
     this.decorators.forEach((options, index) => {

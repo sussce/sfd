@@ -1,6 +1,8 @@
 // @flow
 'use strict';
 
+const asserts = require('asserts')
+const isHTMLElement = require('isHTMLElement')
 const keyMap = require('keyMap')
 const eventHandler = require('eventHandler')
 const Content = require('Content')
@@ -11,12 +13,16 @@ type Props = {
   editorState: EditorState,
   onChange: (editorState: EditorState)=>void,
   readOnly: boolean,
-  keyMap: Function
+  keyMap: Function,
+  placeholder?: string,
+  styleMap?: Object,
+  ...
 }
 
 type DefaultProps = {
   readOnly: boolean,
-  keyMap: Function
+  keyMap: Function,
+  ...
 }
 
 class UpdateEditor extends React.Component<{
@@ -58,6 +64,8 @@ class Editor extends React.Component<Props> {
   _latestEditorState: EditorState
   _committedEditorState: EditorState
   _pendingEditorState: ?EditorState
+  onFocus: Function
+  onBlur: Function
   onKeyDown: Function
   onBeforeInput: Function
   onInput: Function
@@ -69,7 +77,9 @@ class Editor extends React.Component<Props> {
     this._blockSelectEvent = false
     this._latestEditorState = props.editorState
     this._committedEditorState = props.editorState
+
     this.onFocus = this.buildHandler('onFocus')
+    this.onBlur = this.buildHandler('onBlur')
     this.onKeyDown = this.buildHandler('onKeyDown')
     this.onBeforeInput = this.buildHandler('onBeforeInput')
     this.onInput = this.buildHandler('onInput')
@@ -90,11 +100,9 @@ class Editor extends React.Component<Props> {
 
   render(): React.Node {
     const {editorState, readOnly} = this.props
-
     const style = {
       outline: 'none',
-      // fix parent-draggable Safari bug. #1326
-      userSelect: 'text',
+      userSelect: 'text', /* fix parent-draggable Safari bug. #1326 */
       WebkitUserSelect: 'text',
       whiteSpace: 'pre-wrap',
       wordWrap: 'break-word',
@@ -108,6 +116,7 @@ class Editor extends React.Component<Props> {
           <div className='editor'
                style={style}
                onFocus={this.onFocus}
+               onBlur={this.onBlur}
                onKeyDown={this.onKeyDown}
                onBeforeInput={this.onBeforeInput}
                onInput={this.onInput}
@@ -145,6 +154,18 @@ class Editor extends React.Component<Props> {
       const handler = eventHandler[event]
       return handler(this, e)
     }
+  }
+
+  focus(): void {
+    const editorNode = this.editor
+    asserts(isHTMLElement(editorNode), 'editorNode is invalid HTMLElement')   
+    editorNode.focus()
+  }
+
+  blur(): void {
+    const editorNode = this.editor
+    asserts(isHTMLElement(editorNode), 'editorNode is invalid HTMLElement')
+    editorNode.blur()
   }
 }
 

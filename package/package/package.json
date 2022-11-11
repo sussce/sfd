@@ -3,11 +3,14 @@
 	"version": "1.0.0",
 	"description": "Stolen from Draftjs",
 	"license": "MIT",
+	"main": "lib/sfd.js",
 	"files": [
 		"lib/",
 		"LICENSE"
 	],
-	"main": "lib/sfd.js",
+	"jest": {
+		"verbose": true
+	},
 	"scripts": {
 		"prepublish": "npm run build",
 		"build": "webpack -c webpack.lib.js",

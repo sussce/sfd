@@ -3,55 +3,149 @@
 
 const sfd = require('sfd')
 const React = require('react')
-const ReactDOM = require('react-dom')
+const {createRoot} = require('react-dom/client')
 
-const {Editor, EditorState, Decorator} = sfd
+const {Editor, EditorState, Decorator, Entity, EntityUtil, richUtil} = sfd
 // const {Editor, EditorState, CompositeDecorator} = require('draft-js')
 
 class App extends React.Component {
   constructor() {
-    super()
-
-    this.link = this.link.bind(this)
+    super();
     
-    const options = [{
+    const decorator = new Decorator([{
       strategy: findHandle,
       component: Handle
-    }]
-
-    const decorator = new Decorator(options)
-     
+    }, {
+      strategy: findEntity,
+      component: Link,
+      props: {}
+    }])
+    
     this.state = {
-      editorState: EditorState.createWithText('take @hm tak\nsome\ncompo', decorator),
-      onChange: (state)=>this.setState({editorState: state})
-    }   
+      editorState: EditorState.
+        createWithText('take @hm tak\nsome\ncompo', decorator),
+      showUrl: false,
+      url: ''
+    }
+
+    this.onChange = (editorState)=>this.setState({editorState})
+    this.focus = ()=>this.refs.editor.focus()
+    
+    this.urlChange = (e)=>this.setState({url: e.target.value})
+    this.urlKeyDown = this.urlKeyDown.bind(this)
+    this.confirmLink = this.confirmLink.bind(this)    
+    this.link = this.link.bind(this)
   }
 
+  style(e, str) {
+    console.log('style')
+  }
+  
   link(e) {
-    console.log('link', e)
+    console.log('link')
+    e.preventDefault()
+    
+    const {editorState} = this.state,
+          selection = editorState.getSelection()
+    
+    if(!selection.getCollapsed()) {
+      console.log(editorState.getSelection().toJS())
+      
+      this.setState({
+        showUrl: !this.state.showUrl
+      }, () => {
+        if (this.state.showUrl)
+          setTimeout(() => this.refs.url.focus(), 0)
+      })
+    }
+  }
+  
+  confirmLink(e) {
+    console.log('confirmlink')
+    e.preventDefault()
+    
+    const {editorState} = this.state
+
+    if (!this.state.url) {
+      this.setState({
+        editorState: richUtil.toggleLink(
+          editorState,
+          editorState.getSelection(),
+          null
+        ),
+        showUrl: false,
+        url: ''
+      }, () => {
+        setTimeout(() => this.refs.editor.focus(), 0)        
+      })
+    }
+    else { 
+      const withEntity = editorState
+            .getContent()
+            .createEntity('LINK', 'MUTABLE', {url: this.state.url})
+
+      const newEditorState = EditorState.set(
+        editorState,
+        {content: withEntity}
+      )
+      
+      this.setState({
+        editorState: richUtil.toggleLink(
+          newEditorState,
+          newEditorState.getSelection(),
+          withEntity.getEntityKey()
+        ),
+        showUrl: false,
+        url: ''
+      }, () => {
+        setTimeout(() => this.refs.editor.focus(), 0)
+      })
+    }
+  }
+  
+  urlKeyDown(e) {
+    if(e.which === 13) {
+      this.confirmLink(e)
+    }
   }
   
   render() {
+    let urlInput = null
+    if(this.state.showUrl) {
+      urlInput = (
+        <div>
+          <span>
+            URL:<br/>
+            <input type="text" ref="url"
+              value={this.state.url}
+              onChange={this.urlChange}
+              onKeyDown={this.urlKeyDown}/>
+          </span>
+          <button onMouseDown={this.confirmLink}>confirm</button>
+        </div>
+      )
+    }
+    
     return (
       <div className='editor-root' style={styles.root}>
-        <div className='editor-panel' style={styles.panel}>
-          <span
-            className='editor-link'
-            style={styles.link}
-            onClick={this.link}>
-            link
-          </span>
-          <span>h</span>
+        <div className='editor-panel'>
+          <span style={styles.panel}>H</span>       
+          <span style={styles.panel}>BOLD</span>
+          <span style={styles.panel}>ITALIC</span>
+          <span style={styles.panel}>UNDERLINE</span>
+          <span style={styles.panel} onClick={this.link}>LINK</span>          
         </div>
-        <div className='editor' style={styles.editor}>
+        {urlInput}
+        <div className='editor' style={styles.editor} onClick={this.onFocus}>
           <Editor
             editorState={this.state.editorState}
-            onChange={this.state.onChange}
-            placeHolder="enter text"/>
+            onChange={this.onChange}
+            placeholder="enter text"
+            ref="editor"/>
         </div>
       </div>
     )
-  }  
+  }
 }
 
 function Handle(props) {
@@ -59,6 +153,30 @@ function Handle(props) {
     <span style = {styles.handle} data-offset-key={props.offsetKey}>
       {props.children}
     </span>
+  )
+}
+
+function Link(props) {
+  const {url} = props.content.getEntity(props.entityKey).getData()
+
+  return (
+    <span>
+      <a href={url} style={styles.link}>
+        {props.children}
+      </a>
+    </span>
+  )
+}
+
+function findEntity(block, callback, content) {
+  block.findEntityRange(
+    (charMeta: CharMeta) => {
+      const entityKey = charMeta.getEntity()
+      return entityKey !== null && content
+        .getEntity(entityKey)
+        .getType() === "LINK"
+    },
+    callback
   )
 }
 
@@ -81,8 +199,7 @@ function findRegex(block, checker, regex) {
 
 const styles = {
   root: {
-    //border: "1px solid #eee",
-    fontFamily: "'Georgia', serif",
+    fontFamily: "serif",
     fontSize: 14,
     padding: 0,
     width: 300
@@ -91,22 +208,24 @@ const styles = {
     border: "1px solid #ddd",
     cursor: "text",
     fontSize: 16,
-    //marginTop: 20,
     minHeight: 100,
     padding: 5
   },
   handle: {
-    color: "blue",
+    color: "blue"
+  },
+  panel: {
+    marginRight: '10px',
     cursor: "pointer"
   },
-  panel: {},
   link: {
-    cursor: "pointer",
-    marginRight: 10
-  }
+    color: 'blue',
+    textDecoration: 'underline',
+    cursor: "pointer"
+  },
+  bold: {}
 }
 
-ReactDOM.render(
-  <App />,
+createRoot(
   document.getElementById('root')
-)
+).render(<App />)

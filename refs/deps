@@ -1,0 +1,30 @@
+// core
+npm i immutable
+npm i -D react react-dom
+npm i -D react-test-renderer
+npm i -D flow-bin
+npm i -D @types/react @types/react-dom
+
+// format
+npm i -D prettier
+npm i -D eslint
+npm i -D eslint-config-babel eslint-config-prettier
+npm i -D eslint-plugin-flowtype eslint-plugin-react
+
+// test
+npm i -D jest
+
+// babel
+npm i -D @babel/core @babel/cli
+npm i -D @babel/preset-env @babel/preset-react @babel/preset-flow
+npm i -D @babel/plugin-proposal-class-properties
+npm i -D @babel/plugin-proposal-object-rest-spread
+npm i -D @babel/eslint-parser
+
+// webpack
+npm i -D webpack webpack-cli webpack-dev-server html-webpack-plugin
+// npm i -D  webpack-merge clean-webpack-plugin
+npm i -D babel-loader css-loader style-loader
+
+npm i -D cross-env
+npm i draft-js

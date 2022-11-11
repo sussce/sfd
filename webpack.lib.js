@@ -13,8 +13,15 @@ const externals = {
 		commonjs: 'react-dom',
 		commonjs2: 'react-dom',
 		amd: 'react-dom'
-	}
-}
+	},
+  immutable: {
+    root: 'Immutable',
+    commonjs: 'immutable',
+    commonjs2: 'immutable',
+    amd: 'immutable'
+  }
+};
+
 const modules = [
   r('src'),
   r('src/core'),
@@ -26,6 +33,7 @@ const modules = [
   r('src/model'),
   r('src/model/constants'),
   r('src/model/decorator'),
+  r('src/model/entity'),
   r('src/model/immutable'),
   r('src/model/modifiers'),
   r('src/model/transaction'),
@@ -38,7 +46,7 @@ module.exports = (env, argv) => {
 	const config = {
 		entry: {
 			sfd: r('src/sfd.js')
-		},
+		},    
 		output: {
 			path: r('lib'),
 			filename: '[name].js',
@@ -59,14 +67,14 @@ module.exports = (env, argv) => {
 		module: {
 			rules: [{
 				test: /\.js$/,
-				exclude: [/node_modules/, r('scratch')],
+				exclude: [/node_modules/],
 				loader: 'babel-loader',
 			},{
 				test: /\.css$/,
 				use: ['style-loader','css-loader']
 			}]
 		},
-		plugins: []
+    plugins: []
 	}
 
 	if(env.debug) {

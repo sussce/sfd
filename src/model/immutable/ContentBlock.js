@@ -2,6 +2,8 @@
 'use strict';
 
 import type {InlineStyle} from 'InlineStyle'
+const findRange = require('findRange')
+const Entity = require('Entity')
 const CharMeta = require('CharMeta')
 const {Record, List, OrderedSet} = require('immutable')
 
@@ -24,12 +26,29 @@ const defaultConfig: ContentBlockConfig = {
 const ContentBlockRecord = (Record(defaultConfig):any)
 
 class ContentBlock extends ContentBlockRecord {
+  findEntityRange(
+    filter: (charMeta: CharMeta) => boolean,
+    callback: (start: number, end: number) => void
+  ): void {
+    findRange(
+      this.getCharMetas(),
+      equalEntity,
+      filter,
+      callback
+    )
+  }
+  
   getLength(): number {
     return this.getText().length
   }
+
+  getEntityAt(offset: number): string {
+    const charMeta: CharMeta = this.getCharMetas().get(offset)
+    return charMeta ? charMeta.getEntity() : null
+  }
   
   getStyleAt(offset: numeber): InlineStyle {
-    const charMeta:CharMeta = this.getCharMetas().get(offset)
+    const charMeta: CharMeta = this.getCharMetas().get(offset)
     return charMeta ? charMeta.getStyle() : EMPTY_SET
   }
   
@@ -49,5 +68,8 @@ class ContentBlock extends ContentBlockRecord {
     return this.get('charMetas')
   }
 }
+
+const equalEntity = (charA: CharMeta, charB: CharMeta) =>
+      charA.getEntity() === charB.getEntity()
 
 module.exports = ContentBlock

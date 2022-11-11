@@ -19,6 +19,20 @@ class Content extends React.Component<Props> {
     super(props)
   }
 
+  shouldComponentUpdate(nextProps: Props): boolean {
+    const prevEditorState = this.props.editorState,
+          nextEditorState = nextProps.editorState;
+
+    const prevContent = prevEditorState.getContent(),
+          nextContent = nextEditorState.getContent();
+    
+    const prevDecorator = prevEditorState.getDecorator(),
+          nextDecorator = nextEditorState.getDecorator();
+
+    return (prevContent !== nextContent
+            || prevDecorator !== nextDecorator);
+  }
+  
   render(): React.Node {
     const {editor, editorState} = this.props
     const content = editorState.getContent()
@@ -55,7 +69,8 @@ class Content extends React.Component<Props> {
         block,
         decorator,
         selection,
-        tree
+        tree,
+        content
       }
 
       Blocks.push(<Block key={blockKey} {...props}/>)

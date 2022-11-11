@@ -113,52 +113,50 @@ class LinkEditorExample extends React.Component {
     if (this.state.showURLInput) {
       urlInput =
         <div style={styles.urlInputContainer}>
-        <input
-      onChange={this.onURLChange}
-      ref="url"
-      style={styles.urlInput}
-      type="text"
-      value={this.state.urlValue}
-      onKeyDown={this.onLinkInputKeyDown}
-        />
-        <button onMouseDown={this.confirmLink}>
-        Confirm
-      </button>
+          <input
+            onChange={this.onURLChange}
+            ref="url"
+            style={styles.urlInput}
+            type="text"
+            value={this.state.urlValue}
+            onKeyDown={this.onLinkInputKeyDown}
+          />
+          <button onMouseDown={this.confirmLink}>
+            Confirm
+          </button>
         </div>;
     }
 
     return (
-        <div style={styles.root}>
+      <div style={styles.root}>
         <div style={{marginBottom: 10}}>
-        Select some text, then use the buttons to add or remove links
-      on the selected text.
+          Select some text, then use the buttons to add or remove links
+          on the selected text.
         </div>
         <div style={styles.buttons}>
-        <button
-      onMouseDown={this.promptForLink}
-      style={{marginRight: 10}}>
-        Add Link
-      </button>
-        <button onMouseDown={this.removeLink}>
-        Remove Link
-      </button>
+          <button
+            onMouseDown={this.promptForLink}
+            style={{marginRight: 10}}>
+            Add Link
+          </button>
+          <button onMouseDown={this.removeLink}>
+            Remove Link
+          </button>
         </div>
         {urlInput}
         <div style={styles.editor} onClick={this.focus}>
-        <Editor
-      editorState={this.state.editorState}
-      onChange={this.onChange}
-      placeholder="Enter some text..."
-      ref="editor"
-        />
+          <Editor
+            editorState={this.state.editorState}
+            onChange={this.onChange}
+            placeholder="Enter some text..."
+            ref="editor"/>
         </div>
         <input
-      onClick={this.logState}
-      style={styles.button}
-      type="button"
-      value="Log State"
-        />
-        </div>
+          onClick={this.logState}
+          style={styles.button}
+          type="button"
+          value="Log State"/>
+      </div>
     );
   }
 }
