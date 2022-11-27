@@ -13,6 +13,8 @@ type Props = {
   editorState: EditorState,
   onChange: (editorState: EditorState)=>void,
   readOnly: boolean,
+  spellCheck: string,
+  autoCorrect: string,
   keyMap: Function,
   placeholder?: string,
   styleMap?: Object,
@@ -21,6 +23,8 @@ type Props = {
 
 type DefaultProps = {
   readOnly: boolean,
+  spellCheck: string,
+  autoCorrect: string,
   keyMap: Function,
   ...
 }
@@ -51,6 +55,8 @@ class UpdateEditor extends React.Component<{
 class Editor extends React.Component<Props> {
   static defaultProps: DefaultPropss = {
     readOnly: false,
+    autoCorrect: "false",
+    spellCheck: "false",
     keyMap: keyMap
   }
 
@@ -99,7 +105,7 @@ class Editor extends React.Component<Props> {
   }
 
   render(): React.Node {
-    const {editorState, readOnly} = this.props
+    const {editorState} = this.props
     const style = {
       outline: 'none',
       userSelect: 'text', /* fix parent-draggable Safari bug. #1326 */
@@ -121,7 +127,9 @@ class Editor extends React.Component<Props> {
                onBeforeInput={this.onBeforeInput}
                onInput={this.onInput}
                onSelect={this.onSelect}
-               contentEditable={!readOnly}
+               contentEditable={!this.props.readOnly}
+               autoCorrect={this.props.autoCorrect}
+               spellCheck={this.props.spellCheck}
                suppressContentEditableWarning>
             <UpdateEditor editor={this} editorState={editorState}/>
             <Content editor={this} editorState={editorState}/>

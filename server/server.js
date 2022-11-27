@@ -5,7 +5,8 @@ const sfd = require('sfd')
 const React = require('react')
 const {createRoot} = require('react-dom/client')
 
-const {Editor, EditorState, Decorator, Entity, EntityUtil, richUtil} = sfd
+const {Editor, EditorState, Decorator, richUtil} = sfd
+const {Stack} = require('immutable')
 // const {Editor, EditorState, CompositeDecorator} = require('draft-js')
 
 class App extends React.Component {
@@ -23,11 +24,11 @@ class App extends React.Component {
     
     this.state = {
       editorState: EditorState.
-        createWithText('take @hm tak\nsome\ncompo', decorator),
+        createWithText('take @hm tak\nsome\ncomyyypo', decorator),
       showUrl: false,
       url: ''
     }
-
+    
     this.onChange = (editorState)=>this.setState({editorState})
     this.focus = ()=>this.refs.editor.focus()
     
@@ -35,33 +36,43 @@ class App extends React.Component {
     this.urlKeyDown = this.urlKeyDown.bind(this)
     this.confirmLink = this.confirmLink.bind(this)    
     this.link = this.link.bind(this)
+    this.style = this.style.bind(this)
   }
 
-  style(e, str) {
-    console.log('style')
+  componentDidUpdate() {}
+  
+  style(e, tag) {
+    e.preventDefault()
+
+    const {editorState} = this.state
+    const selection = editorState.getSelection()
+    if (selection.getCollapsed()) return;
+
+    this.setState({
+      editorState: richUtil.applyStyle(editorState, selection, tag)
+    }, () => {
+      setTimeout(() => this.refs.editor.focus(), 0)
+    })
+
   }
   
   link(e) {
-    console.log('link')
     e.preventDefault()
     
     const {editorState} = this.state,
           selection = editorState.getSelection()
     
-    if(!selection.getCollapsed()) {
-      console.log(editorState.getSelection().toJS())
-      
-      this.setState({
-        showUrl: !this.state.showUrl
-      }, () => {
-        if (this.state.showUrl)
-          setTimeout(() => this.refs.url.focus(), 0)
-      })
-    }
+    if(selection.getCollapsed()) return;
+    
+    this.setState({
+      showUrl: !this.state.showUrl
+    }, () => {
+      if (this.state.showUrl)
+        setTimeout(() => this.refs.url.focus(), 0)
+    })
   }
   
   confirmLink(e) {
-    console.log('confirmlink')
     e.preventDefault()
     
     const {editorState} = this.state
@@ -79,10 +90,10 @@ class App extends React.Component {
         setTimeout(() => this.refs.editor.focus(), 0)        
       })
     }
-    else { 
-      const withEntity = editorState
-            .getContent()
-            .createEntity('LINK', 'MUTABLE', {url: this.state.url})
+    else {
+      const withEntity = editorState.getContent().createEntity(
+        'LINK', 'MUTABLE', {url: this.state.url}
+      )
 
       const newEditorState = EditorState.set(
         editorState,
@@ -110,7 +121,7 @@ class App extends React.Component {
   }
   
   render() {
-    let urlInput = null
+    let Styles = [], urlInput = null
     if(this.state.showUrl) {
       urlInput = (
         <div>
@@ -121,19 +132,24 @@ class App extends React.Component {
               onChange={this.urlChange}
               onKeyDown={this.urlKeyDown}/>
           </span>
-          <button onMouseDown={this.confirmLink}>confirm</button>
         </div>
       )
     }
+
+    styleSet.map((obj, key) => {
+      Styles.push(<Style key={key}
+               onStyle={this.style}
+               tag={obj.tag}
+               value={obj.value}
+               style={obj.style}/>)
+    })
     
     return (
       <div className='editor-root' style={styles.root}>
-        <div className='editor-panel'>
-          <span style={styles.panel}>H</span>       
-          <span style={styles.panel}>BOLD</span>
-          <span style={styles.panel}>ITALIC</span>
-          <span style={styles.panel}>UNDERLINE</span>
-          <span style={styles.panel} onClick={this.link}>LINK</span>          
+        <div className='editor-panel' style={styles["editor-panel"]}>
+          {Styles}
+          <span style={styles.panel} onClick={this.link}>LINK</span>
+          <span style={styles.panel}>QUOTE</span>
         </div>
         {urlInput}
         <div className='editor' style={styles.editor} onClick={this.onFocus}>
@@ -144,6 +160,21 @@ class App extends React.Component {
             ref="editor"/>
         </div>
       </div>
+    )
+  }
+}
+
+class Style extends React.Component {
+  constructor() {
+    super();
+  }
+
+  render() {
+    return (
+      <span style={{...styles.panel, ...this.props.style}}
+            onClick={e=>this.props.onStyle(e, this.props.tag)}>
+        {this.props.value}
+      </span>
     )
   }
 }
@@ -202,7 +233,12 @@ const styles = {
     fontFamily: "serif",
     fontSize: 14,
     padding: 0,
-    width: 300
+    width: 310
+  },
+  "editor-panel": {
+    width: 310,
+    wordWrap: 'break-word',
+    marginBottom: '0.25rem'
   },
   editor: {
     border: "1px solid #ddd",
@@ -215,7 +251,8 @@ const styles = {
     color: "blue"
   },
   panel: {
-    marginRight: '10px',
+    fontSize: '14px',
+    marginRight: '0.8rem',
     cursor: "pointer"
   },
   link: {
@@ -225,6 +262,18 @@ const styles = {
   },
   bold: {}
 }
+
+const styleSet = [
+  { tag: "BOLD", value: "B", style: {fontWeight: 'bold'} },
+  { tag: "ITALIC", value: "I", style: {fontStyle: 'italic'} },
+  { tag: "UNDERLINE", value: "U", style: {textDecoration: 'underline'} },
+  { tag: "LINETHROUGH", value: "W", style: {textDecoration: 'line-through'} },
+  { tag: "MONOSPACE", value: "<>", style: {fontFamily: 'monospace', wordWrap: 'break-word'} },
+  { tag: "H1", value: "H1", style: {} },
+  { tag: "H2", value: "H2", style: {} },
+  { tag: "H3", value: "H3", style: {} },
+  /*{ tag: "QUOTE", value: """", style: {} }*/
+]
 
 createRoot(
   document.getElementById('root')

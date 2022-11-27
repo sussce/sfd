@@ -1,18 +1,17 @@
 // @flow
 'use strict';
-import type {InlineStyle} from 'InlineStyle'
+
 const ContentBlock = require('ContentBlock')
 const CharMeta = require('CharMeta')
 
-function applyStyleToContentBlock(
+function applyStyleToBlock(
   block: ContentBlock,
-  style: InlineStyle,
+  style: string,
   start: number,
   end: number
-): ContentBlock {
+): ContentBlock {  
   let charMetas = block.getCharMetas()
-  while(start < end) {
-    const charMeta = charMetas.get(start)
+  while (start < end) {
     charMetas = charMetas.set(
       start,
       CharMeta.applyStyle(charMetas.get(start), style)
@@ -22,4 +21,4 @@ function applyStyleToContentBlock(
   return block.set('charMetas', charMetas)
 }
 
-module.exports = applyStyleToContentBlock
+module.exports = applyStyleToBlock

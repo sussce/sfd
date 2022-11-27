@@ -3,7 +3,8 @@
 'use strict';
 
 import type {InlineStyle} from 'InlineStyle'
-// const applyStyle = require('applyStyle')
+
+const applyStyle = require('applyStyle')
 const applyEntity = require('applyEntity')
 const insertChars = require('insertChars')
 const splitBlock = require('splitBlock')
@@ -19,10 +20,10 @@ const modifier = {
   applyStyle(
     content: ContentState,
     selection: SelectionState,
-    style: InlineStyle
+    style: string
   ): ContentState {
     console.log('modifier:applyStyle')
-
+    
     return applyStyle(content, selection, style)
   },
   
@@ -33,8 +34,9 @@ const modifier = {
   ): ContentState {
     console.log('modifier:applyEntity')
 
-    // removeEntitiesAtEdges
-    return applyEntity(content, selection, entityKey)
+    //const withoutEntity = removeEntity(content, selection)
+    const withoutEntity = content
+    return applyEntity(withoutEntity, selection, entityKey)
   },
   
   replaceChars(

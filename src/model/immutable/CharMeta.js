@@ -54,11 +54,20 @@ class CharMeta extends CharMetaRecord {
     style: string
   ): CharMeta {
     const styleSet = charMeta.getStyle()
-    
     charMeta = styleSet.includes(style)
       ? charMeta
       : charMeta.set('style', styleSet.add(style))
-    
+    return CharMeta.create(charMeta)
+  }
+
+  static removeStyle(
+    charMeta: CharMeta,
+    style: string
+  ): CharMeta {
+    const styleSet = charMeta.getStyle()
+    charMeta = styleSet.includes(style)
+      ? charMeta.set('style', styleSet.delete(style))
+      : charMeat
     return CharMeta.create(charMeta)
   }
   

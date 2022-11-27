@@ -2,8 +2,15 @@
 'use strict';
 
 export type KeyCommand =
+  | 'undo'
+  | 'redo'
+  | 'split-block'  
   | 'backspace'
-  | 'backspaceWord' 
-  | 'split-block'
-  | 'apply-entity'
-  | 'remove-entity'
+  | 'backspaceWord'
+  | 'delete'
+  | 'deleteWord'
+  | 'bold'
+  | 'italic'
+  | 'monospace'
+  | 'underline'
+  | 'linethrough'

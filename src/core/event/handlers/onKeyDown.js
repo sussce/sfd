@@ -1,6 +1,9 @@
 // @flow
 'use strict';
 
+const handleStyle = require('handleStyle')
+const handleRedo = require('handleRedo')
+const handleUndo = require('handleUndo')
 const insertNewLine = require('insertNewLine')
 const backspace = require('backspace')
 const backspaceWord = require('backspaceWord')
@@ -15,36 +18,27 @@ function onKeyDown(
   console.log('KEYDOWN');
   
   const { keyMap } = _this.props,
-        { key, keyCode } = e
+        { keyCode } = e
 
   // space, return
-  switch(keyCode) {
-/*  case keys.RETURN:
-    console.log('key:return')
-    e.preventDefault()
-    break */
-/*  case keys.SPACE:
-    console.log('key:space')
-    e.preventDefault()
-    break; */
-  default:
-    break;
-  }
+  switch(keyCode) {}
 
-  const command = keyMap(e)
+  const command = keyMap(e);
+  if(!command) return;
   
-  if(!command) {
-    return 
-  }
-
   e.preventDefault()
+  
+  // top-level handler
+  // return _this.props.handler()
 
-  // top-level
-  // const { handler } = _this.props
+  const { editorState } = _this.props
 
-  const { editorState } = _this.props,
-        newEditorState = handle(command, editorState)
-   
+  /* special updating behavior in-sync is required,
+     handle it separately. */
+  if (command == 'undo')
+    return handleUndo(e, editorState, _this);
+
+  const newEditorState = handle(command, editorState)
   if(editorState != newEditorState) {
     _this.sync(newEditorState)
   }
@@ -55,12 +49,22 @@ function handle(
   editorState: EditorState
 ): EditorState {
   switch(command) {
+  case 'split-block':
+    return insertNewLine(editorState)    
+  case 'redo':
+    return handleRedo(editorState)
   case 'backspace':
     return backspace(editorState)
   case 'backspaceWord':
     return backspaceWord(editorState)
-  case 'split-block':
-    return insertNewLine(editorState)
+  case 'bold':
+  case 'italic':
+  case 'monospace':
+  case 'underline':
+  case 'linethrough':
+    return handleStyle(editorState, command)
+  case 'delete':
+  case 'deleteWord':
   default:
     return editorState
   }

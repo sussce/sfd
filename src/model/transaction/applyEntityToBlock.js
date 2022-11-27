@@ -4,7 +4,7 @@
 const ContentBlock = require('ContentBlock')
 const CharMeta = require('CharMeta')
 
-function applyEntityToContentBlock(
+function applyEntityToBlock(
   block: ContentBlock,
   entityKey: string,
   start: number,
@@ -22,4 +22,4 @@ function applyEntityToContentBlock(
   return block.set('charMetas', charMetas)
 }
 
-module.exports = applyEntityToContentBlock
+module.exports = applyEntityToBlock

@@ -8,25 +8,26 @@ const SelectionState = require('SelectionState')
 const Decorator = require('Decorator')
 const ContentBlock = require('ContentBlock')
 const Tree = require('Tree')
-const {List, OrderedMap, Record} = require('immutable')
+const {List, OrderedMap, Record, Stack} = require('immutable')
 
 type EditorStateConfig = {
   content: ?ContentState,
   selection: ?SelectionState,
-  //forceSelection: boolean,
+  forceSelection: boolean,
   decorator: ?Decorator,
-  treeMap: ?OrderedMap<string, List<any>>
-  // undo: Stack, selectionBefore beforeinput changeType
-  // redo: Stack
+  treeMap: ?OrderedMap<string, List<any>>,
+  changeType?: ?string,   
+  undo: Stack, //selectionBefore beforeinput changeType
+  redo: Stack
 }
 
 type EditorStateBaseConfig = {
   content?: ?ContentState,
   selection?: ?SelectionState,
-  //forceSelection?: boolean,
-  // changeType: ?string,
+  forceSelection?: boolean,
   decorator?: ?Decorator,
-  treeMap?: ?OrderedMap<string, List<any>>
+  treeMap?: ?OrderedMap<string, List<any>>,
+  changeType: ?string  
 }
 
 type EditorStateCreateConfig = {
@@ -42,7 +43,9 @@ const defaultConfig: EditorStateConfig = {
   content: null,
   selection: null,
   decorator: null,
-  treeMap: null
+  treeMap: null,
+  undo: Stack(),
+  redo: Stack()
 }
 
 const EditorStateRecord = (Record(defaultConfig):any)
@@ -131,6 +134,7 @@ class EditorState {
     forceSelection: boolean = true,
   ): EditorState {
     const content = editorState.getContent()
+    let undoStack = editorState.getUndo()
     
     if (newContent == editorState.getContent()) {
       return editorState
@@ -139,7 +143,7 @@ class EditorState {
     const selection = editorState.getSelection()
 
     if (selection !== content.getSelectionAfter()) {
-      // undoStack = undoStack.push(content)
+      undoStack = undoStack.push(content)
       newContent = newContent.set('selectionBefore', selection)
     }
     else if(changeType == 'insert-chars') {
@@ -153,14 +157,51 @@ class EditorState {
       content: newContent,
       selection: newContent.getSelectionAfter(),
       forceSelection,
-      changeType
-      // undo: undoStack
+      changeType,
+      undo: undoStack
     }
     
     return EditorState.set(editorState, options)  
   }
 
-  // getUndo
+  static undo(editorState: EditorState): EditorState {
+    const undoStack = editorState.getUndo(),
+          undoContent = undoStack.peek()
+
+    if (!undoContent) return editorState;
+
+    const redoStack = editorState.getRedo(),
+          currentContent = editorState.getContent()
+
+    return EditorState.set(editorState, {
+      content: undoContent,
+      selection: currentContent.getSelectionBefore(),
+      undo: undoStack.shift(),
+      redo: redoStack.push(currentContent),
+      forceSelection: true,
+      changeType: 'undo'
+    })
+  }
+
+  static redo(editorState: EditorState): EditorState {
+    const redoStack = editorState.getRedo(),
+          redoContent = redoStack.peek()
+
+    if (!redoContent) return editorState;
+    console.log(redoStack.toJS())
+
+    const undoStack = editorState.getUndo(),
+          currentContent = editorState.getContent()
+    
+    return EditorState.set(editorState, {
+      content: redoContent,
+      selection: redoContent.getSelectionAfter(),
+      undo: undoStack.push(currentContent),
+      redo: redoStack.shift(),
+      forceSelection: true,
+      changeType: 'redo'
+    })
+  }
   
   acceptSelection(selection: SelectionState): EditorState {
     return  EditorState.set(this, { selection: selection })
@@ -176,9 +217,13 @@ class EditorState {
       forceSelection: true
     })
   }
-  
-  getTree(key: string): List<any> {
-    return this.getTreeMap().get(key)
+
+  getUndo(): Stack {
+    return this.immu.get('undo')
+  }
+
+  getRedo(): Stack {
+    return this.immu.get('redo')
   }
   
   getInlineStyle(): InlineStyle {
@@ -239,6 +284,10 @@ class EditorState {
     return this.immu.get('decorator')
   }
 
+  getTree(key: string): List<any> {
+    return this.getTreeMap().get(key)
+  }
+
   getTreeMap(): OrderedMap<string, List<any>> {
     return this.immu.get('treeMap')
   }
@@ -259,9 +308,9 @@ function newTreeMap(
 }
 
 function newTreeMapWithBlock(
-  editorState,
-  newContent,
-  decorator
+  editorState: EditorState,
+  newContent: ContentState,
+  decorator: Decorator
 ): OrderedMap<string, List<any>> {
   const oldContent = editorState.getContent(),
         oldBlockMap = oldContent.getBlockMap(),

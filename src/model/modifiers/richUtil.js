@@ -12,23 +12,18 @@ const richUtil = {
     selection: SelectionState,
     entityKey: ?string
   ): EditorState {
-    if(selection.getCollapsed()) {
-      return editorState
-    }
-
-    const withEntity = modifier.applyEntity(
+    const withLink = modifier.applyEntity(
       editorState.getContent(),
       editorState.getSelection(),
       entityKey
     )
-    
-    return EditorState.push(editorState, withEntity, 'apply-entity')
+    return EditorState.push(editorState, withLink, 'apply-entity')
   },
 
   applyStyle(
     editorState: EditorState,
     selection: SelectionState,
-    style: InlineStyle
+    style: string
   ): EditorState {
     console.log('richUtil:applyStyle')
 
@@ -36,9 +31,7 @@ const richUtil = {
     let newContent
     
     newContent = modifier.applyStyle(content, selection, style)
-    
-    return editorState
-    // return EditorState.push(editorState, newContent, 'apply-style')
+    return EditorState.push(editorState, newContent, 'apply-style')
   }
 }
 

@@ -4,7 +4,7 @@
 function backspaceWord(
   editorState: EditorState
 ): EditorState {
-  console.log('cmd:backspaceword')
+  console.log('cmd:backspaceWord')
   return editorState
 }
 

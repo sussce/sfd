@@ -13,14 +13,19 @@ const EntityUtil = {
   create(
     type: string,
     mutability: Mutability,
-    data: Object
+    data?: Object
   ): string {
-    const instance = new Entity({type, mutability, data})
-    key = uuid()    
+    return EntityUtil.add(
+      new Entity({type, mutability, data})
+    )
+  },
+
+  add(instance: Entity): string {
+    key = uuid()
     entities = entities.set(key, instance)
     return key
   },
-
+  
   getLastKey(): string {
     return key
   },

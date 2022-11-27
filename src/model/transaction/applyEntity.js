@@ -1,7 +1,7 @@
 // @flow
 'use strict';
 
-const applyEntityToContentBlock = require('applyEntityToContentBlock')
+const applyEntityToBlock = require('applyEntityToBlock')
 const ContentState = require('ContentState')
 const SelectionState = require('SelectionState')
 const {OrderedMap} = require('immutable')
@@ -29,7 +29,7 @@ function applyEntity(
           const start = key === startKey ? startOffset : 0,
                 end = key === endKey ? endOffset : block.getLength()
 
-          return applyEntityToContentBlock(block, entityKey, start, end)
+          return applyEntityToBlock(block, entityKey, start, end)
         })
   
   return content.merge({

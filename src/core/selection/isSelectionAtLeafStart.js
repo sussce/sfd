@@ -1,7 +1,9 @@
 // @flow
 'use strict';
 
-function isSelectionAtLeafStart(editorState: EditorState): boolean {
+function isSelectionAtLeafStart(
+  editorState: EditorState
+): boolean {
   const selection = editorState.getSelection(),
         anchorKey = selection.getAnchorKey(),
         anchorOffset = selection.getAnchorOffset(),

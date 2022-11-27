@@ -1,10 +1,10 @@
 // @flow
 'use strict';
 
+import type Entity from 'Entity'
 import type {Mutability} from 'Mutability'
 import type {ContentBlockConfig} from 'ContentBlock'
 const EntityUtil = require('EntityUtil')
-const Entity = require('Entity')
 const ContentBlock = require('ContentBlock')
 const SelectionState = require('SelectionState')
 const CharMeta = require('CharMeta')
@@ -63,7 +63,7 @@ class ContentState extends ContentStateRecord {
     type: string,
     mutability: Mutability,
     data: Object
-  ): string {
+  ): ContentState {
     EntityUtil.create(type, mutability, data)
     return this
   }
